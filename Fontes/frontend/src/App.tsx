@@ -3,7 +3,7 @@ import { StatCard } from './components/StatCard';
 import { Activity, Calendar } from 'lucide-react';
 import React from 'react';
 
-function Dashboard() {
+export default function App() {
   return (
     <div className="min-h-screen bg-surface p-8">
       <header className="mb-8">
