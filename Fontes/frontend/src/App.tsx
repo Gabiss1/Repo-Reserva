@@ -1,15 +1,20 @@
 import { DoseCard } from './components/DoseCard';
 import { StatCard } from './components/StatCard';
 import { Activity, Calendar } from 'lucide-react';
+import SignUp from './components/SignUp';
 import React from 'react';
 
 function Dashboard() {
+
   return (
+
     <div className="min-h-screen bg-surface p-8">
+
       <header className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Bom dia, João!</h1>
         <p className="text-gray-500">Aqui estão seus medicamentos para hoje.</p>
       </header>
+
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
         <StatCard label="Adesão Semanal" value="94%" icon={Activity} trend="+2% que ontem" />
@@ -33,6 +38,13 @@ function Dashboard() {
           onCheck={() => console.log('Check-in!')} 
         />
       </section>
+
+      <button >
+
+      </button>
+
     </div>
   );
 }
+
+export default Dashboard
