@@ -4,8 +4,7 @@ import { Activity, Calendar } from 'lucide-react';
 import SignUp from './components/SignUp';
 import React from 'react';
 
-function Dashboard() {
-
+export default function App() {
   return (
 
     <div className="min-h-screen bg-surface p-8">
@@ -46,5 +45,3 @@ function Dashboard() {
     </div>
   );
 }
-
-export default Dashboard
