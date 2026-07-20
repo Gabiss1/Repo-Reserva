@@ -2,15 +2,14 @@ import { DoseCard } from './components/DoseCard';
 import { StatCard } from './components/StatCard';
 import { Activity, Calendar, Icon } from 'lucide-react';
 import ButtonAppBar from './ButtonAppBar';
-import SignUp from './components/SignUp';
 import React from 'react';
 
 export default function App() {
   return (
 
-    <div className="min-h-screen bg-surface p-8">
+    <div className="min-h-screen bg-surface w-screen ">
 
-      <header className="mb-8">
+      <header className="mb-8 border-amber-300 border-4 borde">
         <h1 className="text-3xl font-bold text-gray-900">Bom dia, João!</h1>
         <p className="text-gray-500">Aqui estão seus medicamentos para hoje.</p>
       </header>
