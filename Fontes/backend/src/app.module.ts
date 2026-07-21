@@ -1,18 +1,41 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ScheduleModule } from '@nestjs/schedule';
+
+// Controllers
+import { TreatmentsController } from './controllers/treatmentsController';
+import { UsersController } from './controllers/usersController';
+
+// Services
+import { TreatmentsService } from './services/treatmentsService';
+import { UsersService } from './services/usersService';
+import { NotificationsService } from './services/notificationsService';
+
+// Entidades
+import { User } from './entidades/User';
+import { Treatment } from './entidades/Treatment';
+import { Medication } from './entidades/Medication';
+import { DoseHistory } from './entidades/DoseHistory';
+
+// Gateway
+import { NotificationsGateway } from './gateways/notifications';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'user', // O mesmo do Docker/Postgres local
-      password: 'password',
-      database: 'medicapp',
-      autoLoadEntities: true,
-      synchronize: true, // Apenas para desenvolvimento!
+      /* ... suas configs de banco ... */
+      entities: [User, Treatment, Medication, DoseHistory],
+      synchronize: true,
     }),
+    TypeOrmModule.forFeature([User, Treatment, Medication, DoseHistory]),
+    ScheduleModule.forRoot()
+  ],
+  controllers: [TreatmentsController, UsersController],
+  providers: [
+    TreatmentsService, 
+    UsersService,
+    NotificationsService, 
+    NotificationsGateway
   ],
 })
 export class AppModule {}
