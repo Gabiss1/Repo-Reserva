@@ -6,18 +6,21 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { TreatmentsController } from './controllers/treatmentsController';
 import { ReportsController } from './controllers/reportsController';
 import { UsersController } from './controllers/usersController';
+import { CategoriesController } from './controllers/categoriesController';
 
 // Services
 import { TreatmentsService } from './services/treatmentsService';
 import { UsersService } from './services/usersService';
 import { NotificationsService } from './services/notificationsService';
 import { ReportsService } from './services/reportsService';
+import { CategoriesService } from './services/categoriesService';
 
 // Entidades
 import { User } from './entidades/User';
 import { Treatment } from './entidades/Treatment';
 import { Medication } from './entidades/Medication';
 import { DoseHistory } from './entidades/DoseHistory';
+import { Category } from './entidades/Category';
 
 // Gateway
 import { NotificationsGateway } from './gateways/notifications';
@@ -29,16 +32,24 @@ import { NotificationsGateway } from './gateways/notifications';
       entities: [User, Treatment, Medication, DoseHistory],
       synchronize: true,
     }),
-    TypeOrmModule.forFeature([User, Treatment, Medication, DoseHistory]),
+    TypeOrmModule.forFeature([User, Treatment, Medication, DoseHistory, Category]),
     ScheduleModule.forRoot()
   ],
-  controllers: [TreatmentsController, UsersController, ReportsController],
+
+  controllers: [
+    TreatmentsController,
+    UsersController, 
+    ReportsController, 
+    CategoriesController
+  ],
+
   providers: [
     TreatmentsService, 
     UsersService,
     NotificationsService, 
     NotificationsGateway,
-    ReportsService
+    ReportsService,
+    CategoriesService
   ],
 })
 export class AppModule {}
