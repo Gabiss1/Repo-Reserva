@@ -2,16 +2,22 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, CreateDat
 import { User } from './User';
 import { Medication } from './Medication';
 import { DoseHistory } from './DoseHistory';
+import { Patient } from './Patient';
 
 @Entity('treatments')
 export class Treatment {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => User, (user) => user.treatments)
-  patient: User;
+  // Opcional: Se for um usuário gerindo o próprio remédio
+  @ManyToOne(() => User, (user) => user.treatments, { nullable: true })
+  user: User;
 
-  @ManyToOne(() => Medication, (medication) => medication.treatments)
+  // Opcional: Se for um paciente sendo gerido por uma clínica
+  @ManyToOne(() => Patient, (patient) => patient.treatments, { nullable: true })
+  patient: Patient;
+
+  @ManyToOne(() => Medication)
   medication: Medication;
 
   @Column()

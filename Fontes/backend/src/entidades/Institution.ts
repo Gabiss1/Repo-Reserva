@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn } from 'typeorm';
 import { User } from './User';
+import { Patient } from './Patient';
 
 @Entity('institutions')
 export class Institution {
@@ -12,9 +13,11 @@ export class Institution {
   @Column({ unique: true })
   cnpj: string;
 
-  @OneToMany(() => User, (user) => user.institution)
-  members: User[];
+  // Uma instituição tem vários pacientes
+  @OneToMany(() => Patient, (patient) => patient.institution)
+  patients: Patient[];
 
-  @CreateDateColumn()
-  createdAt: Date;
+  // Admin da instituição (Usuário com papel de admin)
+  @OneToMany(() => User, (user) => user.managedInstitution)
+  admins: User[];
 }
