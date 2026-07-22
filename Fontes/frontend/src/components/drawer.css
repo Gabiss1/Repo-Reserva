@@ -15,7 +15,7 @@
     height: 100vh;
   
     color: black;
-    background: #fff;
+    background-color:rgb(255, 255, 255);
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
   
     transform: translateX(-100%);
@@ -23,6 +23,7 @@
   
     padding: 20px;
     z-index: 1000;
+
   }
   
   .drawer.open {
