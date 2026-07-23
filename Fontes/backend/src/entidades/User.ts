@@ -1,25 +1,27 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn } from 'typeorm';
 import { Treatment } from './Treatment';
-
-export enum UserRole {
-  PATIENT = 'patient',
-  ADMIN = 'admin',
-}
 
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column()
-  name: string;
+  name!: string;
 
   @Column({ unique: true })
-  email: string;
+  email!: string;
 
   @Column({ unique: true, nullable: true })
-  cpf: string;
+  cpf!: string;
 
+  @Column({ select: false })
+  password!: string;
+
+  // Um usuário autônomo gerencia seus próprios tratamentos
   @OneToMany(() => Treatment, (treatment) => treatment.user)
-  treatments: Treatment[];
+  treatments!: Treatment[];
+
+  @CreateDateColumn()
+  createdAt!: Date;
 }

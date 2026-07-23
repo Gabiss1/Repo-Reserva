@@ -1,23 +1,21 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn } from 'typeorm';
-import { User } from './User';
 import { Patient } from './Patient';
 
 @Entity('institutions')
 export class Institution {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column()
-  name: string;
+  name!: string;
 
   @Column({ unique: true })
-  cnpj: string;
+  cnpj!: string;
 
-  // Uma instituição tem vários pacientes
+  // Uma instituição tem ligação APENAS com pacientes
   @OneToMany(() => Patient, (patient) => patient.institution)
-  patients: Patient[];
+  patients!: Patient[];
 
-  // Admin da instituição (Usuário com papel de admin)
-  @OneToMany(() => User, (user) => user.managedInstitution)
-  admins: User[];
+  @CreateDateColumn()
+  createdAt!: Date;
 }

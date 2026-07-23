@@ -4,17 +4,17 @@ import { Medication } from './Medication';
 @Entity('categories')
 export class Category {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column({ unique: true })
-  name: string;
+  name!: string;
 
   @Column({ nullable: true })
-  description: string;
+  description!: string;
 
   @OneToMany(() => Medication, (medication) => medication.category)
-  medications: Medication[];
+  medications!: Medication[];
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 }

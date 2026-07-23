@@ -20,9 +20,4 @@ export class UsersController {
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.findOne(id);
   }
-
-  @Get('institution/:id/patients')
-  findPatients(@Param('id', ParseUUIDPipe) id: string) {
-    return this.usersService.findPatientsByInstitution(id);
-  }
 }

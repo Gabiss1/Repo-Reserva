@@ -4,20 +4,20 @@ import { Treatment } from './Treatment';
 @Entity('dose_history')
 export class DoseHistory {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @ManyToOne(() => Treatment, (treatment) => treatment.history)
-  treatment: Treatment;
+  treatment!: Treatment;
 
   @Column({ type: 'timestamp' })
-  scheduledTime: Date;
+  scheduledTime!: Date;
 
   @Column({ type: 'timestamp', nullable: true })
-  takenAt: Date;
+  takenAt!: Date;
 
   @Column({ default: false })
-  isTaken: boolean;
+  isTaken!: boolean;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 }

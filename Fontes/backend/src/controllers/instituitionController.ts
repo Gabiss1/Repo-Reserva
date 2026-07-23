@@ -1,11 +1,6 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Institution } from 'src/entidades/Institution';
-import { Patient } from 'src/entidades/Patient';
 import { Controller, Get, Post, Body, Param, ParseUUIDPipe } from '@nestjs/common';
-import { InstitutionsService } from '../services/institutions.service';
-import 
+import { InstitutionsService } from 'src/services/instituitionService';
+import { Patient } from 'src/entidades/Patient';
 
 @Controller('institutions')
 export class InstitutionsController {
@@ -29,7 +24,9 @@ export class InstitutionsController {
   @Post(':id/patients')
   registerPatient(
     @Param('id', ParseUUIDPipe) id: string, 
-    @Body() patientData: any
+    @Body() patientData: Partial<Patient>
+
+
   ) {
     return this.institutionsService.addPatient(id, patientData);
   }

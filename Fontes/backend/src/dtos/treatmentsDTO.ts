@@ -11,23 +11,18 @@ export class CreateTreatmentDto {
   patientCpf?: string;
 
   @IsUUID()
-  medicationId: string;
+  medicationId!: string;
 
   @IsNumber()
   @Min(1)
-  @IsOptional() 
-  frequency?: number; // Opcional, pois o Service foca no intervalHours
+  intervalHours!: number; // Ex: 8 em 8 horas
 
   @IsNumber()
   @Min(1)
-  intervalHours: number; // Ex: 8 em 8 horas
-
-  @IsNumber()
-  @Min(1)
-  durationDays: number; // Ex: 7 dias
+  durationDays!: number; // Ex: 7 dias
 
   @IsDateString()
-  startDate: string;
+  startDate!: string;
 
   @IsString()
   @IsOptional()

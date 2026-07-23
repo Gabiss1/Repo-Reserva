@@ -7,28 +7,28 @@ import { DoseHistory } from './DoseHistory';
 @Entity('treatments')
 export class Treatment {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
-  // RELAÇÃO 1: Usuário autônomo (Opcional)
+  // Pode pertencer a um Usuário Autônomo
   @ManyToOne(() => User, (user) => user.treatments, { nullable: true })
-  user: User;
+  user?: User;
 
-  // RELAÇÃO 2: Paciente gerido por clínica (Opcional)
+  // OU a um Paciente de Instituição
   @ManyToOne(() => Patient, (patient) => patient.treatments, { nullable: true })
-  patient: Patient;
+  patient?: Patient;
 
   @ManyToOne(() => Medication)
-  medication: Medication;
+  medication!: Medication;
 
   @Column()
-  intervalHours: number;
+  intervalHours!: number;
 
   @Column()
-  durationDays: number;
+  durationDays!: number;
 
   @Column({ type: 'timestamp' })
-  startDate: Date;
+  startDate!: Date;
 
   @OneToMany(() => DoseHistory, (history) => history.treatment)
-  history: DoseHistory[];
+  history!: DoseHistory[];
 }

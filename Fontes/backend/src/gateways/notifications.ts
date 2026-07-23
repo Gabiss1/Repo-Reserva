@@ -11,7 +11,7 @@ import { Logger } from '@nestjs/common';
   cors: { origin: '*' },
 })
 export class NotificationsGateway implements OnGatewayConnection, OnGatewayDisconnect {
-  @WebSocketServer() server: Server;
+  @WebSocketServer() server!: Server;
   private logger: Logger = new Logger('NotificationsGateway');
   private userSockets = new Map<string, string>();
 

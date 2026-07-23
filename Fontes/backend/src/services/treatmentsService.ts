@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Between, LessThan } from 'typeorm';
-import { Treatment } from 'src/entidades/Treatment';
-import { DoseHistory } from 'src/entidades/DoseHistory';
-import { Patient } from 'src/entidades/Patient';
-import { User } from 'src/entidades/User';
+import { Treatment } from '../entidades/Treatment';
+import { DoseHistory } from '../entidades/DoseHistory';
+import { User } from '../entidades/User';
+import { Patient } from '../entidades/Patient';
 import { CreateTreatmentDto } from '../dtos/treatmentsDTO';
 
 @Injectable()
@@ -20,10 +20,12 @@ export class TreatmentsService {
     private patientRepository: Repository<Patient>,
   ) {}
 
+  /**
+   * Cria um novo tratamento vinculando-o a um Usuário ou Paciente via CPF.
+   */
   async create(dto: CreateTreatmentDto) {
     let owner: { user?: User; patient?: Patient } = {};
 
-    // Se o usuário passar CPF, buscamos quem é o dono do tratamento
     if (dto.userCpf) {
       const user = await this.userRepository.findOne({ where: { cpf: dto.userCpf } });
       if (!user) throw new NotFoundException('Usuário autônomo não encontrado com este CPF');
@@ -39,7 +41,6 @@ export class TreatmentsService {
       durationDays: dto.durationDays,
       startDate: new Date(dto.startDate),
       medication: { id: dto.medicationId },
-      // Vinculamos o objeto completo ou apenas a referência
       user: owner.user,
       patient: owner.patient
     });
@@ -49,27 +50,12 @@ export class TreatmentsService {
     return saved;
   }
 
-  async checkInDose(doseId: string): Promise<DoseHistory> {
-    const dose = await this.doseHistoryRepository.findOne({ 
-      where: { id: doseId },
-      relations: {
-        treatment: true
-      }
-    });
-
-    if (!dose) throw new NotFoundException('Dose não encontrada');
-    if (dose.isTaken) throw new BadRequestException('Esta dose já foi marcada como tomada');
-
-    dose.isTaken = true;
-    dose.takenAt = new Date();
-
-    return this.doseHistoryRepository.save(dose);
-  }
-
+  /**
+   * Gera o histórico de doses e persiste no banco de dados.
+   */
   private async generateDoses(treatment: Treatment) {
     const doses: DoseHistory[] = [];
-    // Cálculo de doses baseado na duração e intervalo
-    const totalDoses = (24 / treatment.intervalHours) * treatment.durationDays;
+    const totalDoses = Math.floor((24 / treatment.intervalHours) * treatment.durationDays);
     let nextDoseTime = new Date(treatment.startDate);
 
     for (let i = 0; i < totalDoses; i++) {
@@ -81,12 +67,80 @@ export class TreatmentsService {
       doses.push(dose);
       nextDoseTime.setHours(nextDoseTime.getHours() + treatment.intervalHours);
     }
+    
+    await this.doseHistoryRepository.save(doses);
   }
 
-  // Busca tratamentos baseada no CPF (Flexibilidade para o front)
+  /**
+   * Retorna a agenda completa de um período (ou dia específico).
+   */
+  async getDailyAgenda(id: string, type: 'user' | 'patient', date: Date = new Date()) {
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const whereCondition = type === 'user' 
+      ? { treatment: { user: { id } } } 
+      : { treatment: { patient: { id } } };
+
+    return this.doseHistoryRepository.find({
+      where: {
+        ...whereCondition,
+        scheduledTime: Between(startOfDay, endOfDay),
+      },
+      relations: {
+        treatment: { medication: true },
+      },
+      order: { scheduledTime: 'ASC' },
+    });
+  }
+
+  /**
+   * Retorna doses atrasadas (agendadas no passado e não tomadas).
+   */
+  async getMissedDoses(id: string, type: 'user' | 'patient') {
+    const whereCondition = type === 'user' 
+      ? { treatment: { user: { id } } } 
+      : { treatment: { patient: { id } } };
+
+    return this.doseHistoryRepository.find({
+      where: {
+        ...whereCondition,
+        scheduledTime: LessThan(new Date()),
+        isTaken: false,
+      },
+      relations: {
+        treatment: { medication: true },
+      },
+      order: { scheduledTime: 'DESC' },
+    });
+  }
+
+  /**
+   * Realiza o check-in de uma dose.
+   */
+  async checkInDose(doseId: string): Promise<DoseHistory> {
+    const dose = await this.doseHistoryRepository.findOne({
+      where: { id: doseId },
+      relations: { treatment: true }
+    });
+
+    if (!dose) throw new NotFoundException('Dose não encontrada');
+    if (dose.isTaken) throw new BadRequestException('Esta dose já foi marcada como tomada');
+
+    dose.isTaken = true;
+    dose.takenAt = new Date();
+
+    return this.doseHistoryRepository.save(dose);
+  }
+
+  /**
+   * Lista todos os tratamentos de um dono via CPF.
+   */
   async findAllByCpf(cpf: string, type: 'user' | 'patient') {
     const whereCondition = type === 'user' ? { user: { cpf } } : { patient: { cpf } };
-    
+
     return this.treatmentRepository.find({
       where: whereCondition,
       relations: {
@@ -96,3 +150,4 @@ export class TreatmentsService {
     });
   }
 }
+
