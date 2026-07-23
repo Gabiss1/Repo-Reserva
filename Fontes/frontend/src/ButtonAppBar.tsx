@@ -7,8 +7,11 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useEffect } from "react";
 import { useState } from "react";
-
 import { Drawer } from "./components/Drawer";
+import React from "react";
+import Image from "@mui/icons-material/Image";
+import MedicationIcon from '@mui/icons-material/Medication';
+import { Icon } from "@mui/material";
 
 export default function ButtonAppBar() {
   const [open, setOpen] = useState(false);
@@ -16,18 +19,24 @@ export default function ButtonAppBar() {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <div className="drawerInBox" style={{background: "black"}}>
+
       <Drawer 
         open={open}
         onClose={() => setOpen(false)}
       >
-        <h2>Menu</h2>
+
+
+        <h2>Medicapp</h2>
+
+
 
         <ul>
-          <li>Home</li>
-          <li>Perfil</li>
-          <li>Configurações</li>
+          <li><Button style={{color: "black"}}>Inicio</Button></li>
+          <li><Button style={{color: "black"}}>Perfil</Button></li>
+          <li><Button style={{color: "black"}}>Configurações</Button></li>
         </ul>
       </Drawer>
+      
       </div>
       <AppBar position="static">
         <Toolbar>
@@ -43,7 +52,7 @@ export default function ButtonAppBar() {
           </IconButton>
 
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            News
+            <MedicationIcon/>
           </Typography>
 
           <Button color="inherit">Login</Button>

@@ -12,7 +12,7 @@ export function Drawer({ open, onClose, children }: DrawerProps) {
     <>
       {open && <div className="overlay" onClick={onClose} />}
 
-      <aside className={`drawer ${open ? "open" : ""}`}>
+      <aside className={`drawer ${open ? "open" : "close"}`}>
         <button className="close-button" onClick={onClose}>
           ✕
         </button>
