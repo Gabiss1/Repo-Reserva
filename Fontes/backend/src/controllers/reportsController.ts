@@ -1,17 +1,19 @@
 import { Controller, Get, Param, ParseUUIDPipe } from '@nestjs/common';
-import { ReportsService } from '../services/reportsService';
+import { ReportsService } from 'src/services/reportsService';
 
 @Controller('reports')
 export class ReportsController {
   constructor(private readonly reportsService: ReportsService) {}
 
+  // Rota para ver adesão individual do paciente
   @Get('adherence/patient/:id')
-  async getPatientAdherence(@Param('id', ParseUUIDPipe) id: string) {
+  getPatientAdherence(@Param('id', ParseUUIDPipe) id: string) {
     return this.reportsService.getPatientAdherence(id);
   }
 
-  @Get('summary/institution/:id')
-  async getInstitutionSummary(@Param('id', ParseUUIDPipe) id: string) {
-    return this.reportsService.getWeeklySummary(id);
+  // Rota principal do Dashboard da Clínica
+  @Get('summary/institution/:instId')
+  getInstitutionSummary(@Param('instId', ParseUUIDPipe) instId: string) {
+    return this.reportsService.getInstitutionSummary(instId);
   }
 }

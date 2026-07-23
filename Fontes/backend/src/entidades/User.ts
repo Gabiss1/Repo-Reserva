@@ -1,6 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Treatment } from './Treatment';
-import { Institution } from './Institution';
 
 export enum UserRole {
   PATIENT = 'patient',
@@ -18,21 +17,9 @@ export class User {
   @Column({ unique: true })
   email: string;
 
-  @Column({ select: false })
-  password: string;
-
-  @Column({ type: 'enum', enum: UserRole, default: UserRole.PATIENT })
-  role: UserRole;
-
-  @Column({ nullable: true })
+  @Column({ unique: true, nullable: true })
   cpf: string;
 
-  @ManyToOne(() => Institution, (institution) => institution.members, { nullable: true })
-  institution: Institution;
-
-  @OneToMany(() => Treatment, (treatment) => treatment.patient)
+  @OneToMany(() => Treatment, (treatment) => treatment.user)
   treatments: Treatment[];
-
-  @CreateDateColumn()
-  createdAt: Date;
 }

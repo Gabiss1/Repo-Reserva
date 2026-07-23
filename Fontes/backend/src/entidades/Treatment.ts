@@ -1,19 +1,19 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
 import { User } from './User';
+import { Patient } from './Patient';
 import { Medication } from './Medication';
 import { DoseHistory } from './DoseHistory';
-import { Patient } from './Patient';
 
 @Entity('treatments')
 export class Treatment {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  // Opcional: Se for um usuário gerindo o próprio remédio
+  // RELAÇÃO 1: Usuário autônomo (Opcional)
   @ManyToOne(() => User, (user) => user.treatments, { nullable: true })
   user: User;
 
-  // Opcional: Se for um paciente sendo gerido por uma clínica
+  // RELAÇÃO 2: Paciente gerido por clínica (Opcional)
   @ManyToOne(() => Patient, (patient) => patient.treatments, { nullable: true })
   patient: Patient;
 
@@ -21,23 +21,14 @@ export class Treatment {
   medication: Medication;
 
   @Column()
-  frequency: number; // Ex: 3 (vezes ao dia)
+  intervalHours: number;
 
   @Column()
-  intervalHours: number; // Ex: 8 (de 8 em 8 horas)
-
-  @Column()
-  durationDays: number; // Duração total do tratamento
+  durationDays: number;
 
   @Column({ type: 'timestamp' })
   startDate: Date;
 
-  @Column({ default: true })
-  isActive: boolean;
-
   @OneToMany(() => DoseHistory, (history) => history.treatment)
   history: DoseHistory[];
-
-  @CreateDateColumn()
-  createdAt: Date;
 }

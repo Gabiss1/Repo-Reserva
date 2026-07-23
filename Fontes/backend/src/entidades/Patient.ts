@@ -13,11 +13,7 @@ export class Patient {
   @Column({ unique: true, nullable: true })
   cpf: string;
 
-  // O paciente pertence a uma instituição
-  @ManyToOne(() => Institution, (institution) => institution.patients)
-  institution: Institution;
-
-  // Os tratamentos do paciente são criados e geridos pela instituição
   @OneToMany(() => Treatment, (treatment) => treatment.patient)
   treatments: Treatment[];
 }
+
