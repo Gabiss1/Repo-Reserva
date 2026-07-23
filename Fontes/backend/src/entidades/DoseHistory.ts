@@ -9,10 +9,10 @@ export class DoseHistory {
   @ManyToOne(() => Treatment, (treatment) => treatment.history)
   treatment!: Treatment;
 
-  @Column({ type: 'timestamp' })
+  @Column({ type: 'datetime' })
   scheduledTime!: Date;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: 'datetime', nullable: true })
   takenAt!: Date;
 
   @Column({ default: false })

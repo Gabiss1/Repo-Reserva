@@ -26,7 +26,7 @@ export class Treatment {
   @Column()
   durationDays!: number;
 
-  @Column({ type: 'timestamp' })
+  @Column({ type: 'datetime' })
   startDate!: Date;
 
   @OneToMany(() => DoseHistory, (history) => history.treatment)
