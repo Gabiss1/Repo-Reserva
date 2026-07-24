@@ -8,14 +8,17 @@ import React from 'react';
 
 export default function App() {
   const [open, setOpen] = useState(false);
+
   return (
+
     <div className="min-h-screen bg-surface w-screen ">
-            <div className="menuButtonBar">
+
+      <div className="menuButtonBar">
         <ButtonAppBar/>
       </div>
 
       <header className="mb-8 border-amber-300 border-4 borde">
-        <h1 className="text-3xl font-bold text-gray-900">Bom dia, João!</h1>
+        <h1 className="text-3xl font-bold text-gray-900">Bom dia, Paciente!</h1>
         <p className="text-gray-500">Aqui estão seus medicamentos para hoje.</p>
       </header>
 
