@@ -8,7 +8,7 @@ import { ReportsController } from './controllers/reportsController';
 import { UsersController } from './controllers/usersController';
 import { CategoriesController } from './controllers/categoriesController';
 import { MedicationsController } from './controllers/medicationController';
-import { InstitutionsController } from './controllers/instituitionController';
+import { InstitutionsController } from './controllers/institutionController';
 import { PatientsController } from './controllers/patientsController';
 
 // Services
@@ -18,7 +18,7 @@ import { NotificationsService } from './services/notificationsService';
 import { ReportsService } from './services/reportsService';
 import { CategoriesService } from './services/categoriesService';
 import { MedicationsService } from './services/medicationService';
-import { InstitutionsService } from './services/instituitionService';
+import { InstitutionsService } from './services/institutionService';
 import { PatientsService } from './services/patientsService';
 
 // Entidades
@@ -40,7 +40,7 @@ import { NotificationsGateway } from './gateways/notifications';
       host: 'localhost',
       port: 3306,
       username: 'root', 
-      password: '713406Gab#18042006',    
+      password: 'root',    
       database: 'medicapp',
       entities: [
         User, 
