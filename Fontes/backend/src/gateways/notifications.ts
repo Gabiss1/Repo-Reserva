@@ -8,13 +8,11 @@ import { Server, Socket } from 'socket.io';
 import { Logger } from '@nestjs/common';
 
 @WebSocketGateway({
-  cors: { origin: '*' }, // Em produção, restrinja para a URL do seu frontend
+  cors: { origin: '*' },
 })
 export class NotificationsGateway implements OnGatewayConnection, OnGatewayDisconnect {
-  @WebSocketServer() server: Server;
+  @WebSocketServer() server!: Server;
   private logger: Logger = new Logger('NotificationsGateway');
-
-  // Mapa para associar ID de usuário ao SocketID
   private userSockets = new Map<string, string>();
 
   handleConnection(client: Socket) {
@@ -26,7 +24,6 @@ export class NotificationsGateway implements OnGatewayConnection, OnGatewayDisco
   }
 
   handleDisconnect(client: Socket) {
-    // Remover do mapa ao desconectar
     for (const [userId, socketId] of this.userSockets.entries()) {
       if (socketId === client.id) {
         this.userSockets.delete(userId);

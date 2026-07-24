@@ -1,26 +1,28 @@
-import { IsString, IsNumber, IsUUID, IsDateString, IsOptional, Min } from 'class-validator';
+import { IsString, IsNumber, IsUUID, IsDateString, IsOptional, Min, ValidateIf } from 'class-validator';
 
 export class CreateTreatmentDto {
-  @IsUUID()
-  patientId: string;
+  // Agora aceitamos CPF no lugar de IDs internos para facilitar a busca no Service
+  @IsString()
+  @IsOptional()
+  userCpf?: string;
+
+  @IsString()
+  @IsOptional()
+  patientCpf?: string;
 
   @IsUUID()
-  medicationId: string;
+  medicationId!: string;
 
   @IsNumber()
   @Min(1)
-  frequency: number; // Ex: 3 vezes ao dia
+  intervalHours!: number; // Ex: 8 em 8 horas
 
   @IsNumber()
   @Min(1)
-  intervalHours: number; // Ex: 8 em 8 horas
-
-  @IsNumber()
-  @Min(1)
-  durationDays: number; // Ex: 7 dias
+  durationDays!: number; // Ex: 7 dias
 
   @IsDateString()
-  startDate: string;
+  startDate!: string;
 
   @IsString()
   @IsOptional()

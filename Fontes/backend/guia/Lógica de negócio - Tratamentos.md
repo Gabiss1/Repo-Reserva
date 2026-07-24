@@ -16,3 +16,8 @@ Para que o MedicApp alerte o usuário no momento exato da dose, precisamos de do
 
 No terminal do seu backend, instale os pacotes necessários:
 npm install --save @nestjs/schedule @nestjs/websockets @nestjs/platform-socket.io
+
+
+Como testar?
+No seu frontend, você precisará instalar socket.io-client e conectar passando o userId na query string:
+const socket = io('http://localhost:3000', { query: { userId: 'ID_DO_USUARIO' } });

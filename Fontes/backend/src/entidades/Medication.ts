@@ -1,21 +1,24 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, CreateDateColumn } from 'typeorm';
 import { Treatment } from './Treatment';
+import { Category } from './Category';
 
-// 
 @Entity('medications')
 export class Medication {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column()
-  name: string;
+  name!: string;
 
   @Column({ nullable: true })
-  dosageForm: string; // Ex: Comprimido, Gotas
+  dosageForm!: string; // Ex: Comprimido, Xarope, Gotas
 
   @Column({ nullable: true })
-  strength: string; // Ex: 50mg, 500mg/ml
+  strength!: string; // Ex: 500mg, 10mg/ml
+
+  @ManyToOne(() => Category, (category) => category.medications, { nullable: true })
+  category!: Category;
 
   @OneToMany(() => Treatment, (treatment) => treatment.medication)
-  treatments: Treatment[];
+  treatments!: Treatment[];
 }

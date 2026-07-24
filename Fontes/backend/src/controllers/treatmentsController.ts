@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param, Patch, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Patch, ParseUUIDPipe, Query } from '@nestjs/common';
 import { TreatmentsService } from 'src/services/treatmentsService';
 import { CreateTreatmentDto } from 'src/dtos/treatmentsDTO';
 
@@ -11,19 +11,28 @@ export class TreatmentsController {
     return this.treatmentsService.create(createTreatmentDto);
   }
 
-  @Get('agenda/:patientId')
-  getAgenda(@Param('patientId') patientId: string) {
-    return this.treatmentsService.getPatientAgenda(patientId);
+  @Get('agenda/:id')
+  getAgenda(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Query('type') type: 'user' | 'patient' = 'patient'
+  ) {
+    return this.treatmentsService.getDailyAgenda(id, type);
   }
 
-  @Get('agenda/today/:patientId')
-  async getToday(@Param('patientId', ParseUUIDPipe) patientId: string) {
-    return this.treatmentsService.getDailyAgenda(patientId);
+  @Get('agenda/today/:id')
+  async getToday(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Query('type') type: 'user' | 'patient' = 'patient'
+  ) {
+    return this.treatmentsService.getDailyAgenda(id, type, new Date());
   }
 
-  @Get('agenda/missed/:patientId')
-  async getMissed(@Param('patientId', ParseUUIDPipe) patientId: string) {
-    return this.treatmentsService.getMissedDoses(patientId);
+  @Get('agenda/missed/:id')
+  async getMissed(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Query('type') type: 'user' | 'patient' = 'patient'
+  ) {
+    return this.treatmentsService.getMissedDoses(id, type);
   }
 
   @Patch('check-in/:doseId')
