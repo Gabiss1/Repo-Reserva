@@ -1,37 +1,34 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
 import { User } from './User';
+import { Patient } from './Patient';
 import { Medication } from './Medication';
 import { DoseHistory } from './DoseHistory';
 
 @Entity('treatments')
 export class Treatment {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
-  @ManyToOne(() => User, (user) => user.treatments)
-  patient: User;
+  // Pode pertencer a um Usuário Autônomo
+  @ManyToOne(() => User, (user) => user.treatments, { nullable: true })
+  user?: User;
 
-  @ManyToOne(() => Medication, (medication) => medication.treatments)
-  medication: Medication;
+  // OU a um Paciente de Instituição
+  @ManyToOne(() => Patient, (patient) => patient.treatments, { nullable: true })
+  patient?: Patient;
+
+  @ManyToOne(() => Medication)
+  medication!: Medication;
 
   @Column()
-  frequency: number; // Ex: 3 (vezes ao dia)
+  intervalHours!: number;
 
   @Column()
-  intervalHours: number; // Ex: 8 (de 8 em 8 horas)
+  durationDays!: number;
 
-  @Column()
-  durationDays: number; // Duração total do tratamento
-
-  @Column({ type: 'timestamp' })
-  startDate: Date;
-
-  @Column({ default: true })
-  isActive: boolean;
+  @Column({ type: 'datetime' })
+  startDate!: Date;
 
   @OneToMany(() => DoseHistory, (history) => history.treatment)
-  history: DoseHistory[];
-
-  @CreateDateColumn()
-  createdAt: Date;
+  history!: DoseHistory[];
 }
