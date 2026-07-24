@@ -16,7 +16,7 @@ export function Drawer({ open, onClose, children }: DrawerProps) {
         <button className="close-button" onClick={onClose}>
           ✕
         </button>
-
+        
         {children}
       </aside>
     </>

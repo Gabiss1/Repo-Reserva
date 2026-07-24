@@ -22,8 +22,6 @@ export default function App() {
         <p className="text-gray-500">Aqui estão seus medicamentos para hoje.</p>
       </header>
 
-
-
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
         <StatCard label="Adesão Semanal" value="94%" icon={Activity} trend="+2% que ontem" />
         <StatCard label="Próxima Dose" value="12:30" icon={Calendar} />
