@@ -1,0 +1,10 @@
+#perfilContainer{
+    width: 120px;
+    background-color: white;
+}
+
+ul{
+    display: flex;
+    align-self: center;
+}
+

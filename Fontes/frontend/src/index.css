@@ -87,7 +87,16 @@ ul {
   text-align: justify;
 }
 
+#nomePerfil{
+  font-weight: bold;
+}
 
+#titleApp{
+  font-weight: bold;
+  padding-bottom: 33px;
+}
 
-
+#buttonLogin{
+  font-weight: bold;
+}
 
