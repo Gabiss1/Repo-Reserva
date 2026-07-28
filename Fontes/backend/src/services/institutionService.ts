@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { TreatmentsService } from './treatmentsService';
 import { Institution } from 'src/entidades/Institution';
 import { Patient } from 'src/entidades/Patient';
 
@@ -11,6 +12,7 @@ export class InstitutionsService {
     private institutionRepository: Repository<Institution>,
     @InjectRepository(Patient)
     private patientRepository: Repository<Patient>,
+    private readonly treatmentsService: TreatmentsService
   ) { }
 
   async create(name: string, cnpj: string) {
@@ -42,6 +44,31 @@ export class InstitutionsService {
       institution
     });
     return this.patientRepository.save(patient);
+  }
+
+  async addTreatmentToPatient(
+    institutionId: string, 
+    patientCpf: string, 
+    treatmentData: any
+  ) {
+    // 1. Validar se a instituição existe
+    const institution = await this.findOne(institutionId);
+
+    // 2. Validar se o paciente pertence a esta instituição
+    const patient = await this.patientRepository.findOne({
+      where: { 
+        cpf: patientCpf, 
+        institution: { id: institutionId } 
+      }
+    });
+
+    if (!patient) throw new NotFoundException('Paciente não encontrado nesta instituição');
+
+    // 3. Delegar a criação para o TreatmentsService (que gera as doses)
+    return this.treatmentsService.create({
+      ...treatmentData,
+      patientCpf: patient.cpf
+    });
   }
 
   async findOne(id: string) {
