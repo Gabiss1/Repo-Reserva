@@ -26,8 +26,6 @@ export default function ButtonAppBar() {
           open={open}
           onClose={() => setOpen(false)}
         >
-
-
           <h2>Medicapp</h2>
 
           <div><AccountCircleIcon fontSize="large" /></div>
@@ -35,7 +33,7 @@ export default function ButtonAppBar() {
 
           <ul>
             <li><Button style={{ color: "black" }}>Meus Medicamentos</Button></li>
-            {/* <li><Button style={{ color: "black" }}>Perfil</Button></li> esta parte tem que mudar para quando clicar o icone do perfil entre no proprio dito cujo*/} 
+            {/* <li><Button style={{ color: "black" }}>Perfil</Button></li> esta parte tem que mudar para quando clicar o icone do perfil entre no proprio dito cujo*/}
             {/* <li><Button style={{ color: "black" }}>Lembretes</Button></li>
             <li><Button style={{ color: "black" }}>Agenda</Button></li> */}
             <li><Button style={{ color: "black" }}>Farmácias Próximas</Button></li>
