@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body, Param, ParseUUIDPipe } from '@nestjs/common';
-import { InstitutionsService } from 'src/services/instituitionService';
+import { InstitutionsService } from 'src/services/institutionService';
 import { Patient } from 'src/entidades/Patient';
+import { CreateTreatmentDto } from 'src/dtos/treatmentsDTO';
 
 @Controller('institutions')
 export class InstitutionsController {
@@ -29,5 +30,14 @@ export class InstitutionsController {
 
   ) {
     return this.institutionsService.addPatient(id, patientData);
+  }
+
+  @Post(':id/patients/:cpf/treatments')
+  assignTreatment(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Param('cpf') cpf: string,
+    @Body() treatmentData: CreateTreatmentDto
+  ) {
+    return this.institutionsService.addTreatmentToPatient(id, cpf, treatmentData);
   }
 }
