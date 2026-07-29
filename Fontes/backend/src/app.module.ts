@@ -40,7 +40,7 @@ import { NotificationsGateway } from './gateways/notifications';
       host: 'localhost',
       port: 3306,
       username: 'root', 
-      password: '713406Gab#18042006',    
+      password: 'root',    
       database: 'medicapp',
       entities: [
         User, 
