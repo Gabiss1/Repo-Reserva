@@ -3,7 +3,6 @@ import { StatCard } from './components/StatCard';
 import { Activity, Calendar, Icon } from 'lucide-react';
 import { useState } from "react";
 import { Drawer } from "./components/Drawer";
-import ButtonAppBar from './ButtonAppBar';
 import React from 'react';
 
 export default function App() {
@@ -12,10 +11,6 @@ export default function App() {
   return (
 
     <div className="min-h-screen bg-surface w-screen ">
-
-      <div className="menuButtonBar">
-        <ButtonAppBar/>
-      </div>
 
       <header className="mb-8 border-amber-300 border-4 borde">
         <h1 className="text-3xl font-bold text-gray-900">Bom dia, Paciente!</h1>
