@@ -1,49 +1,23 @@
-import { DoseCard } from './components/DoseCard';
-import { StatCard } from './components/StatCard';
-import { Activity, Calendar, Icon } from 'lucide-react';
-import { useState } from "react";
-import { Drawer } from "./components/Drawer";
-import React from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { LoginPage } from './pages/LoginPage';
+import { PatientDashboard } from './pages/PatientDashboard';
+import { InstitutionDashboard } from './pages/InstitutionDashboard';
 
-export default function App() {
-  const [open, setOpen] = useState(false);
-
+function App() {
   return (
+    <Routes>
+      <Route path="/login" element={<LoginPage />} />
+      
+      {/* Visão do Paciente */}
+      <Route path="/dashboard" element={<PatientDashboard />} />
+      
+      {/* Visão da Instituição */}
+      <Route path="/admin" element={<InstitutionDashboard />} />
 
-    <div className="min-h-screen bg-surface w-screen ">
-
-      <header className="mb-8 border-amber-300 border-4 borde">
-        <h1 className="text-3xl font-bold text-gray-900">Bom dia, Paciente!</h1>
-        <p className="text-gray-500">Aqui estão seus medicamentos para hoje.</p>
-      </header>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-        <StatCard label="Adesão Semanal" value="94%" icon={Activity} trend="+2% que ontem" />
-        <StatCard label="Próxima Dose" value="12:30" icon={Calendar} />
-      </div>
-
-      <section className="space-y-4 max-w-2xl">
-        <h2 className="text-xl font-semibold mb-4">Próximos Horários</h2>
-        <DoseCard
-          medication="Sertralina"
-          dosage="50mg - 1 comprimido"
-          time="08:00"
-          status="taken"
-          onCheck={() => { }}
-        />
-        <DoseCard
-          medication="Vitamina D"
-          dosage="2000 UI - 1 gota"
-          time="12:30"
-          status="pending"
-          onCheck={() => console.log('Check-in!')}
-        />
-      </section>
-
-
-    </div>
+      {/* Redirecionamento Padrão */}
+      <Route path="/" element={<Navigate to="/login" replace />} />
+    </Routes>
   );
 }
 
-
-
+export default App;
