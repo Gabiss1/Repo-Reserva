@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Between } from 'typeorm';
 import { DoseHistory } from 'src/entidades/DoseHistory';
 import { Treatment } from 'src/entidades/Treatment';
+import { AdherenceDto } from 'src/dashboard/dto/AdherenceDTO';
 
 @Injectable()
 export class ReportsService {
@@ -11,7 +12,7 @@ export class ReportsService {
     private doseHistoryRepository: Repository<DoseHistory>,
     @InjectRepository(Treatment)
     private treatmentRepository: Repository<Treatment>,
-  ) {}
+  ) { }
 
   // Resumo para o Dashboard da Instituição (Focado em Pacientes)
   async getInstitutionSummary(institutionId: string) {
@@ -38,7 +39,7 @@ export class ReportsService {
 
     const total = doses.length;
     const taken = doses.filter(d => d.isTaken).length;
-    
+
     // Lista de pacientes únicos ativos na semana
     const activePatientsCount = new Set(doses.map(d => d.treatment.patient?.id).filter(id => !!id)).size;
 
@@ -52,16 +53,19 @@ export class ReportsService {
   }
 
   // Calcula a adesão de um perfil específico (Paciente ou User)
-  async getAdherence(id: string, type: 'user' | 'patient') {
-    const whereCondition = type === 'user' 
-      ? { treatment: { user: { id } } } 
+  async getAdherence(
+    id: string,
+    type: 'user' | 'patient',
+  ): Promise<AdherenceDto> {
+    const whereCondition = type === 'user'
+      ? { treatment: { user: { id } } }
       : { treatment: { patient: { id } } };
 
     const [doses, total] = await this.doseHistoryRepository.findAndCount({
       where: whereCondition,
     });
 
-    if (total === 0) return { percentage: 0, totalDoses: 0, takenDoses: 0 };
+    if (total === 0) return { percentage: 0, totalDoses: 0, takenDoses: 0, missedDoses: 0 };
 
     const takenDoses = doses.filter(d => d.isTaken).length;
     const percentage = Math.round((takenDoses / total) * 100);
