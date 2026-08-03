@@ -5,7 +5,7 @@ import { CreateTreatmentDto } from 'src/dtos/treatmentsDTO';
 
 @Controller('institutions')
 export class InstitutionsController {
-  constructor(private readonly institutionsService: InstitutionsService) {}
+  constructor(private readonly institutionsService: InstitutionsService) { }
 
   @Post()
   create(@Body() dto: { name: string; cnpj: string }) {
@@ -24,11 +24,9 @@ export class InstitutionsController {
 
   @Post(':id/patients')
   registerPatient(
-    @Param('id', ParseUUIDPipe) id: string, 
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() patientData: Partial<Patient>
-
-
-  ) {
+  ){
     return this.institutionsService.addPatient(id, patientData);
   }
 

@@ -7,6 +7,6 @@ import PerfilLogin from './PerfilLogin.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <PerfilLogin />
+    <App />
   </StrictMode>,
 )
