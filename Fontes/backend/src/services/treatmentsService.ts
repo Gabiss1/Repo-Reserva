@@ -18,7 +18,7 @@ export class TreatmentsService {
     private userRepository: Repository<User>,
     @InjectRepository(Patient)
     private patientRepository: Repository<Patient>,
-  ) {}
+  ) { }
 
   /**
    * Cria um novo tratamento vinculando-o a um Usuário ou Paciente via CPF.
@@ -67,7 +67,7 @@ export class TreatmentsService {
       doses.push(dose);
       nextDoseTime.setHours(nextDoseTime.getHours() + treatment.intervalHours);
     }
-    
+
     await this.doseHistoryRepository.save(doses);
   }
 
@@ -80,8 +80,8 @@ export class TreatmentsService {
     const endOfDay = new Date(date);
     endOfDay.setHours(23, 59, 59, 999);
 
-    const whereCondition = type === 'user' 
-      ? { treatment: { user: { id } } } 
+    const whereCondition = type === 'user'
+      ? { treatment: { user: { id } } }
       : { treatment: { patient: { id } } };
 
     return this.doseHistoryRepository.find({
@@ -100,8 +100,8 @@ export class TreatmentsService {
    * Retorna doses atrasadas (agendadas no passado e não tomadas).
    */
   async getMissedDoses(id: string, type: 'user' | 'patient') {
-    const whereCondition = type === 'user' 
-      ? { treatment: { user: { id } } } 
+    const whereCondition = type === 'user'
+      ? { treatment: { user: { id } } }
       : { treatment: { patient: { id } } };
 
     return this.doseHistoryRepository.find({
@@ -138,15 +138,36 @@ export class TreatmentsService {
   /**
    * Lista todos os tratamentos de um dono via CPF.
    */
-  async findAllByCpf(cpf: string, type: 'user' | 'patient') {
-    const whereCondition = type === 'user' ? { user: { cpf } } : { patient: { cpf } };
+  async findAllByCpf(
+    cpf: string,
+    type: 'user' | 'patient',
+    status?: 'ACTIVE' | 'FINISHED' | 'CANCELLED',
+  ) {
+
+    const whereCondition: any =
+      type === 'user'
+        ? {
+          user: { cpf },
+        }
+        : {
+          patient: { cpf },
+        };
+
+    if (status) {
+      whereCondition.status = status;
+    }
 
     return this.treatmentRepository.find({
       where: whereCondition,
       relations: {
         medication: true,
-        history: true
-      }
+        history: true,
+      },
+      order: {
+        history: {
+          scheduledTime: "ASC"
+        },
+      },
     });
   }
 }

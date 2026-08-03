@@ -31,4 +31,15 @@ export class Treatment {
 
   @OneToMany(() => DoseHistory, (history) => history.treatment)
   history!: DoseHistory[];
+
+  @Column({
+    default: 'ACTIVE'
+  })
+  status!: 'ACTIVE' | 'FINISHED' | 'CANCELLED';
+
+  @Column({
+    nullable: true,
+    type: 'text'
+  })
+  notes?: string;
 }
