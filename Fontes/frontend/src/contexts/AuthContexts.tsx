@@ -10,8 +10,8 @@ import {
     logout as logoutService
 } from "../api/services/AuthService";
 
-import { User } from "../api/types/User";
-import { useNavigate } from "react-router-dom";
+import { User } from "../api/types/entities/User";
+import { LoginResponse } from "../api/types/auth/LoginResponse";
 
 interface AuthContextData {
 
@@ -22,13 +22,13 @@ interface AuthContextData {
     login(
         email: string,
         password: string
-    ): Promise<void>;
+    ): Promise<LoginResponse>;
 
     logout(): void;
 
     isAuthenticated: boolean;
-}
 
+}
 
 const AuthContext = createContext<AuthContextData | null>(
     null
@@ -41,7 +41,6 @@ export function AuthProvider({
 }: {
     children: React.ReactNode
 }) {
-    const navigate = useNavigate();
 
     const [user, setUser] = useState<User | null>(
         JSON.parse(
@@ -58,7 +57,7 @@ export function AuthProvider({
     async function login(
         email: string,
         password: string
-    ) {
+    ): Promise<LoginResponse> {
 
         const response =
             await loginService(
@@ -70,8 +69,12 @@ export function AuthProvider({
 
         setToken(response.token);
 
+        localStorage.setItem(
+            "user",
+            JSON.stringify(response.user),
+        );
 
-        navigate("/dashboard");
+        return response;
 
     }
 
@@ -81,9 +84,12 @@ export function AuthProvider({
 
         logoutService();
 
+        localStorage.removeItem("user");
+
         setUser(null);
 
         setToken(null);
+
     }
 
 
@@ -93,10 +99,20 @@ export function AuthProvider({
         const storedToken =
             localStorage.getItem("token");
 
+        const storedUser =
+            localStorage.getItem("user");
 
         if (storedToken) {
 
             setToken(storedToken);
+
+        }
+
+        if (storedUser) {
+
+            setUser(
+                JSON.parse(storedUser)
+            );
 
         }
 

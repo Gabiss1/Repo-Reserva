@@ -1,40 +1,49 @@
-import { Login, Dashboard } from "@mui/icons-material";
 import {
-    BrowserRouter,
     Routes,
-    Route
+    Route,
+    Navigate,
 } from "react-router-dom";
-import PrivateRoute from "./PrivateRoutes";
 
+import PatientDashboard from "../pages/PatientDashboard";
+import PrivateRoute from "./PrivateRoutes";
+import InstitutionDashboard from "../pages/InstitutionDashboard";
+import Login from "../pages/Login";
 
 export default function AppRoutes() {
 
     return (
 
-        <BrowserRouter>
+        <Routes>
 
-            <Routes>
+            <Route
+                path="/"
+                element={<Navigate to="/login" replace />}
+            />
 
+            <Route
+                path="/login"
+                element={<Login />}
+            />
 
-                <Route
-                    path="/login"
-                    element={<Login />}
-                />
+            <Route
+                path="/dashboard"
+                element={
+                    <PrivateRoute>
+                        <PatientDashboard />
+                    </PrivateRoute>
+                }
+            />
 
+            <Route
+                path="/institution"
+                element={
+                    <PrivateRoute>
+                        <InstitutionDashboard />
+                    </PrivateRoute>
+                }
+            />
 
-                <Route
-                    path="/dashboard"
-                    element={
-                        <PrivateRoute>
-                            <Dashboard />
-                        </PrivateRoute>
-                    }
-                />
-
-
-            </Routes>
-
-        </BrowserRouter>
+        </Routes>
 
     );
 

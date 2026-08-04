@@ -1,5 +1,5 @@
 import api from "../api";
-import { Medication } from "../types/Medication";
+import { Medication } from "../types/entities/Medication";
 
 
 export async function getMedications(

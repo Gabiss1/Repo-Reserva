@@ -1,16 +1,5 @@
 import api from "../api";
-import { User } from "../types/User";
-
-
-interface LoginResponse {
-
-    token:string;
-
-    user:User;
-
-}
-
-
+import { LoginResponse } from "../types/auth/LoginResponse";
 
 export async function login(
     email: string,
@@ -30,14 +19,18 @@ export async function login(
         response.data.token,
     );
 
-    return response.data;
+    localStorage.setItem(
+        "user",
+        JSON.stringify(response.data.user),
+    );
 
+    return response.data;
 }
 
-
-
-export function logout(){
+export function logout() {
 
     localStorage.removeItem("token");
+
+    localStorage.removeItem("user");
 
 }

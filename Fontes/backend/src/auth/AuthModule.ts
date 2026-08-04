@@ -13,6 +13,7 @@ import { StringValue } from "ms";
 import { AuthController } from "./AuthController";
 import { InstitutionModule } from "src/modules/InstitutionModule";
 import { UserModule } from "src/modules/UserModule";
+import { RolesGuard } from "./guards/RolesGuards";
 
 @Module({
     imports: [
@@ -52,6 +53,7 @@ import { UserModule } from "src/modules/UserModule";
     providers: [
         AuthService,
         JwtStrategy,
+        RolesGuard,
     ],
 
     exports: [
