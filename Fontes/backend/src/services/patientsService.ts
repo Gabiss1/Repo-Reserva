@@ -10,9 +10,7 @@ export class PatientsService {
     private patientRepository: Repository<Patient>,
   ) {}
 
-  /**
-   * Lista todos os pacientes cadastrados no sistema.
-   */
+  // Função para buscar todos os pacientes cadastrados
   async findAll() {
     return this.patientRepository.find({
       relations: {
@@ -22,48 +20,48 @@ export class PatientsService {
     });
   }
 
-  /**
-   * Busca um paciente específico pelo ID interno.
-   */
+  // Função para buscar um paciente por meio do ID
   async findOne(id: string) {
     const patient = await this.patientRepository.findOne({
       where: { id },
       relations: {
         institution: true,
         treatments: {
-          medication: true
-        }
+          medication: true,
+        },
       },
     });
+
     if (!patient) throw new NotFoundException('Paciente não encontrado');
+
     return patient;
   }
 
-  /**
-   * Busca um paciente pelo CPF.
-   */
+  // Função para buscar um paciente por meio do CPF
   async findByCpf(cpf: string) {
     const patient = await this.patientRepository.findOne({
       where: { cpf },
       relations: {
-        institution: true
-      }
+        institution: true,
+      },
     });
+
     if (!patient) throw new NotFoundException('Paciente não encontrado com este CPF');
+
     return patient;
   }
 
-  /**
-   * Remove o registro de um paciente.
-   */
+  // Função para remover um paciente por meio do CPF
   async remove(cpf: string) {
     const patient = await this.patientRepository.findOne({
       where: { cpf },
       relations: {
-        institution: true
-      }
+        institution: true,
+      },
     });
+
     if (!patient) throw new NotFoundException('Paciente não encontrado com este CPF');
+
     return this.patientRepository.remove(patient);
   }
 }

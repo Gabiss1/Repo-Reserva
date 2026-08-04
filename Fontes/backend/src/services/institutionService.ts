@@ -15,6 +15,7 @@ export class InstitutionsService {
     private readonly treatmentsService: TreatmentsService
   ) { }
 
+  // Função para criar instituição com nome e cnpj
   async create(name: string, cnpj: string) {
     const exists = await this.institutionRepository.findOne({ where: { cnpj } });
     if (exists) throw new ConflictException('CNPJ já cadastrado');
@@ -23,6 +24,7 @@ export class InstitutionsService {
     return this.institutionRepository.save(institution);
   }
 
+  // Função para buscar todos os pacientes dentro de uma instituição
   async findAllPatients(institutionId: string) {
     const institution = await this.institutionRepository.findOne({
       where: { id: institutionId },
@@ -35,6 +37,7 @@ export class InstitutionsService {
     return institution.patients;
   }
 
+  // Função para adicionar paciente dentro de uma instituição 
   async addPatient(institutionId: string, patientData: Partial<Patient>) {
     const institution = await this.institutionRepository.findOne({ where: { id: institutionId } });
     if (!institution) throw new NotFoundException('Instituição não encontrada');
@@ -46,6 +49,7 @@ export class InstitutionsService {
     return this.patientRepository.save(patient);
   }
 
+  // Função para adicionar tratamento a paciente 
   async addTreatmentToPatient(
     institutionId: string, 
     patientCpf: string, 
@@ -71,6 +75,7 @@ export class InstitutionsService {
     });
   }
 
+  // Função para buscar instituição por meio de ID
   async findOne(id: string) {
     const institution = await this.institutionRepository.findOne({
       where: { id },
