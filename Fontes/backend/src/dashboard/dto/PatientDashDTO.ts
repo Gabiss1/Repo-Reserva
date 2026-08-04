@@ -6,10 +6,14 @@ import { TreatmentSummaryDto } from "./TreatmentSummaryDTO";
 
 export class PatientDashboardDto {
 
-    patient: PatientInfoDto;
-    adherence: AdherenceDto;
+    patient!: PatientInfoDto;
+
+    adherence!: AdherenceDto;
+
     nextDose?: NextDoseDto;
-    todayAgenda: TodayAgendaDto[];
-    activeTreatments: TreatmentSummaryDto[];
+
+    todayAgenda!: TodayAgendaDto[];
+
+    activeTreatments!: TreatmentSummaryDto[];
 
 }

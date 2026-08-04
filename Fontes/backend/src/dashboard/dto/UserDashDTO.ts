@@ -8,15 +8,21 @@ export class UserDashboardDto {
     user!: {
 
         id: string;
+
         name: string;
+
         cpf: string;
+
         email: string;
 
     };
 
     adherence!: AdherenceDto;
+
     nextDose?: NextDoseDto;
+
     activeTreatments!: TreatmentSummaryDto[];
+
     todayAgenda!: TodayAgendaDto[];
 
 }

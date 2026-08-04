@@ -9,7 +9,6 @@ export class DashboardController {
     private readonly dashboardService: DashboardService,
   ) {}
 
-  // Read de dashboard com informações específicas de um Paciente
   @Get('patient/:id')
   getPatientDashboard(
     @Param('id', ParseUUIDPipe) id: string,
@@ -17,7 +16,7 @@ export class DashboardController {
     return this.dashboardService.getPatientDashboard(id);
   }
 
-  // Read de dashboard com informações específicas de um Usuário Autônomo
+  @Roles(UserRole.USER)
   @Get('user/:id')
   getUserDashboard(
     @Param('id', ParseUUIDPipe) id: string,
@@ -25,7 +24,7 @@ export class DashboardController {
     return this.dashboardService.getUserDashboard(id);
   }
 
-  // Read de dashboard com informações específicas de uma Instituição
+  @Roles(UserRole.INSTITUTION)
   @Get('institution/:id')
   getInstitutionDashboard(
     @Param('id', ParseUUIDPipe) id: string,
