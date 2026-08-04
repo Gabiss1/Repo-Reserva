@@ -1,42 +1,21 @@
 import { Module } from "@nestjs/common";
-import { TypeOrmModule } from "@nestjs/typeorm";
-
+import { InstitutionModule } from "src/modules/InstitutionModule";
+import { PatientModule } from "src/modules/PatientModule";
+import { ReportModule } from "src/modules/ReportModule";
+import { TreatmentModule } from "src/modules/TreatmentModule";
+import { UserModule } from "src/modules/UserModule";
 import { DashboardController } from "./DashboardController";
 import { DashboardService } from "./DashboardService";
 
-import { Treatment } from '../entidades/Treatment';
-import { DoseHistory } from '../entidades/DoseHistory';
-import { Patient } from '../entidades/Patient';
-import { Institution } from '../entidades/Institution';
-
-import { ReportsModule } from "../reports/reports.module";
-
 @Module({
-
-    imports:[
-
-        TypeOrmModule.forFeature([
-            Institution,
-            Patient,
-            Treatment,
-            DoseHistory
-        ]),
-
-        ReportsModule
-
+    imports: [
+      PatientModule,
+      UserModule,
+      InstitutionModule,
+      TreatmentModule,
+      ReportModule,
     ],
-
-    controllers:[
-        DashboardController
-    ],
-
-    providers:[
-        DashboardService
-    ],
-
-    exports:[
-        DashboardService
-    ]
-
-})
-export class DashboardModule{}
+    controllers: [DashboardController],
+    providers: [DashboardService],
+  })
+  export class DashboardModule {}

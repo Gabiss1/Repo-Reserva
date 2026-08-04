@@ -1,38 +1,30 @@
-import {
-    Controller,
-    Get,
-    Param,
-    ParseUUIDPipe
-} from "@nestjs/common";
+import { Controller, Get, Param, ParseUUIDPipe } from '@nestjs/common';
+import { DashboardService } from './DashboardService';
 
-import { DashboardService } from "./DashboardService";
-
-@Controller("dashboard")
+@Controller('dashboard')
 export class DashboardController {
+  constructor(
+    private readonly dashboardService: DashboardService,
+  ) {}
 
-    constructor(
-        private readonly dashboardService: DashboardService
-    ){}
+  @Get('patient/:id')
+  getPatientDashboard(
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    return this.dashboardService.getPatientDashboard(id);
+  }
 
-    @Get("institution/:id")
-    async getInstitutionDashboard(
-        @Param("id", ParseUUIDPipe) id:string
-    ){
-        return this.dashboardService.getInstitutionDashboard(id);
-    }
+  @Get('user/:id')
+  getUserDashboard(
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    return this.dashboardService.getUserDashboard(id);
+  }
 
-    @Get("patient/:id")
-    async getPatientDashboard(
-        @Param("id", ParseUUIDPipe) id:string
-    ){
-        return this.dashboardService.getPatientDashboard(id);
-    }
-
-    @Get("user/:id")
-    async getUserDashboard(
-        @Param("id", ParseUUIDPipe) id:string
-    ){
-        return this.dashboardService.getUserDashboard(id);
-    }
-
+  @Get('institution/:id')
+  getInstitutionDashboard(
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    return this.dashboardService.getInstitutionDashboard(id);
+  }
 }

@@ -12,4 +12,8 @@ export class TodayAgendaDto {
 
   canCheckIn!: boolean;
 
+  patientId?: string;
+
+  patientName?: string;
+
 }
