@@ -4,10 +4,12 @@ export class InstitutionStatisticsDto {
 
     activeTreatments!: number;
 
+    todayDoses!: number;
+
+    takenToday!: number;
+
+    missedToday!: number;
+
     adherencePercentage!: number;
-
-    dosesToday!: number;
-
-    dosesTakenToday!: number;
 
 }
