@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { LoginPage } from './pages/LoginPage';
-import PatientDashboard from "./pages/PatientDashboard",
+import PatientDashboard from "./pages/PatientDashboard";
 import { InstitutionDashboard } from './pages/InstitutionDashboard';
 
 function App() {
