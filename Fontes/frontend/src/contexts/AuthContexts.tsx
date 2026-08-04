@@ -8,10 +8,10 @@ import {
 import {
     login as loginService,
     logout as logoutService
-} from "../services/authService";
+} from "../api/services/AuthService";
 
 import { User } from "../api/types/User";
-
+import { useNavigate } from "react-router-dom";
 
 interface AuthContextData {
 
@@ -30,8 +30,8 @@ interface AuthContextData {
 }
 
 
-const AuthContext = createContext<AuthContextData>(
-    {} as AuthContextData
+const AuthContext = createContext<AuthContextData | null>(
+    null
 );
 
 
@@ -41,9 +41,13 @@ export function AuthProvider({
 }:{
     children:React.ReactNode
 }){
+    const navigate = useNavigate();
 
-
-    const [user,setUser] = useState<User | null>(null);
+    const [user,setUser] = useState<User | null>(
+        JSON.parse(
+            localStorage.getItem("user") || "null"
+        )
+    );
 
     const [token,setToken] = useState<string | null>(
         localStorage.getItem("token")
@@ -65,6 +69,10 @@ export function AuthProvider({
         setUser(response.user);
 
         setToken(response.token);
+
+
+        navigate("/dashboard");
+
     }
 
 
