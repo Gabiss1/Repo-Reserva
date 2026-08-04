@@ -3,6 +3,7 @@ import { Medication } from './Medication';
 
 @Entity('categories')
 export class Category {
+
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 

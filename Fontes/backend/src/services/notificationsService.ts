@@ -15,15 +15,20 @@ export class NotificationsService {
     private readonly notificationsGateway: NotificationsGateway,
   ) {}
 
+  // Função executada automaticamente a cada minuto para verificar doses agendadas
   @Cron(CronExpression.EVERY_MINUTE)
   async checkScheduledDoses() {
+
+    // Obtém o horário atual e define o intervalo do minuto corrente
     const now = new Date();
     const startOfMinute = new Date(now);
     startOfMinute.setSeconds(0, 0);
+
     const endOfMinute = new Date(now);
     endOfMinute.setSeconds(59, 999);
 
-    // Carregando relações com o novo formato de objeto
+    // Busca todas as doses agendadas para o minuto atual
+    // que ainda não foram marcadas como administradas
     const pendingDoses = await this.doseHistoryRepository.find({
       where: {
         scheduledTime: Between(startOfMinute, endOfMinute),
@@ -33,26 +38,32 @@ export class NotificationsService {
         treatment: {
           patient: true,
           user: true,
-          medication: true
-        }
+          medication: true,
+        },
       },
     });
 
+    // Caso existam doses pendentes, inicia o envio das notificações
     if (pendingDoses.length > 0) {
       this.logger.log(`Disparando ${pendingDoses.length} notificações de dose.`);
-      
+
       pendingDoses.forEach(dose => {
-        // Identifica se o alvo da notificação é um Paciente ou Usuário Autônomo
+
+        // Identifica o destinatário da notificação
+        // (Paciente vinculado ou Usuário Autônomo)
         const targetId = dose.treatment.patient?.id || dose.treatment.user?.id;
-        
+
         if (targetId) {
+
+          // Monta os dados que serão enviados ao cliente
           const payload = {
             title: 'Hora do Medicamento!',
             message: `Está na hora de tomar ${dose.treatment.medication.name} (${dose.treatment.medication.strength || ''})`,
             doseId: dose.id,
-            medicationName: dose.treatment.medication.name
+            medicationName: dose.treatment.medication.name,
           };
 
+          // Envia a notificação em tempo real através do Gateway
           this.notificationsGateway.sendNotification(targetId, payload);
         }
       });
