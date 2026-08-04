@@ -18,21 +18,35 @@ export class TreatmentsService {
     private userRepository: Repository<User>,
     @InjectRepository(Patient)
     private patientRepository: Repository<Patient>,
-  ) { }
+  ) {}
 
-  /**
-   * Cria um novo tratamento vinculando-o a um Usuário ou Paciente via CPF.
-   */
+  // Função para criar um novo tratamento e gerar seu histórico de doses
   async create(dto: CreateTreatmentDto) {
     let owner: { user?: User; patient?: Patient } = {};
 
+    // Identifica se o tratamento pertence a um usuário autônomo
+    // ou a um paciente vinculado a uma instituição
     if (dto.userCpf) {
-      const user = await this.userRepository.findOne({ where: { cpf: dto.userCpf } });
-      if (!user) throw new NotFoundException('Usuário autônomo não encontrado com este CPF');
+      const user = await this.userRepository.findOne({
+        where: { cpf: dto.userCpf },
+      });
+
+      if (!user)
+        throw new NotFoundException(
+          'Usuário autônomo não encontrado com este CPF',
+        );
+
       owner.user = user;
     } else if (dto.patientCpf) {
-      const patient = await this.patientRepository.findOne({ where: { cpf: dto.patientCpf } });
-      if (!patient) throw new NotFoundException('Paciente da clínica não encontrado com este CPF');
+      const patient = await this.patientRepository.findOne({
+        where: { cpf: dto.patientCpf },
+      });
+
+      if (!patient)
+        throw new NotFoundException(
+          'Paciente da clínica não encontrado com este CPF',
+        );
+
       owner.patient = patient;
     }
 
@@ -42,47 +56,60 @@ export class TreatmentsService {
       startDate: new Date(dto.startDate),
       medication: { id: dto.medicationId },
       user: owner.user,
-      patient: owner.patient
+      patient: owner.patient,
     });
 
     const saved = await this.treatmentRepository.save(treatment);
+
+    // Gera automaticamente todas as doses previstas para o tratamento
     await this.generateDoses(saved);
+
     return saved;
   }
 
-  /**
-   * Gera o histórico de doses e persiste no banco de dados.
-   */
+  // Função para gerar o histórico de doses de um tratamento
   private async generateDoses(treatment: Treatment) {
     const doses: DoseHistory[] = [];
-    const totalDoses = Math.floor((24 / treatment.intervalHours) * treatment.durationDays);
+    const totalDoses = Math.floor(
+      (24 / treatment.intervalHours) * treatment.durationDays,
+    );
+
     let nextDoseTime = new Date(treatment.startDate);
 
     for (let i = 0; i < totalDoses; i++) {
       const dose = this.doseHistoryRepository.create({
-        treatment: treatment,
+        treatment,
         scheduledTime: new Date(nextDoseTime),
         isTaken: false,
       });
+
       doses.push(dose);
-      nextDoseTime.setHours(nextDoseTime.getHours() + treatment.intervalHours);
+
+      nextDoseTime.setHours(
+        nextDoseTime.getHours() + treatment.intervalHours,
+      );
     }
 
     await this.doseHistoryRepository.save(doses);
   }
 
-  /**
-   * Retorna a agenda completa de um período (ou dia específico).
-   */
-  async getDailyAgenda(id: string, type: 'user' | 'patient', date: Date = new Date()) {
+  // Função para buscar a agenda de doses de um dia específico
+  async getDailyAgenda(
+    id: string,
+    type: 'user' | 'patient',
+    date: Date = new Date(),
+  ) {
     const startOfDay = new Date(date);
     startOfDay.setHours(0, 0, 0, 0);
+
     const endOfDay = new Date(date);
     endOfDay.setHours(23, 59, 59, 999);
 
-    const whereCondition = type === 'user'
-      ? { treatment: { user: { id } } }
-      : { treatment: { patient: { id } } };
+    // Define o filtro conforme o tipo de perfil informado
+    const whereCondition =
+      type === 'user'
+        ? { treatment: { user: { id } } }
+        : { treatment: { patient: { id } } };
 
     return this.doseHistoryRepository.find({
       where: {
@@ -90,19 +117,23 @@ export class TreatmentsService {
         scheduledTime: Between(startOfDay, endOfDay),
       },
       relations: {
-        treatment: { medication: true },
+        treatment: {
+          medication: true,
+        },
       },
-      order: { scheduledTime: 'ASC' },
+      order: {
+        scheduledTime: 'ASC',
+      },
     });
   }
 
-  /**
-   * Retorna doses atrasadas (agendadas no passado e não tomadas).
-   */
+  // Função para buscar todas as doses em atraso
   async getMissedDoses(id: string, type: 'user' | 'patient') {
-    const whereCondition = type === 'user'
-      ? { treatment: { user: { id } } }
-      : { treatment: { patient: { id } } };
+    // Define o filtro conforme o tipo de perfil informado
+    const whereCondition =
+      type === 'user'
+        ? { treatment: { user: { id } } }
+        : { treatment: { patient: { id } } };
 
     return this.doseHistoryRepository.find({
       where: {
@@ -111,23 +142,34 @@ export class TreatmentsService {
         isTaken: false,
       },
       relations: {
-        treatment: { medication: true },
+        treatment: {
+          medication: true,
+        },
       },
-      order: { scheduledTime: 'DESC' },
+      order: {
+        scheduledTime: 'DESC',
+      },
     });
   }
 
-  /**
-   * Realiza o check-in de uma dose.
-   */
+  // Função para registrar que uma dose foi administrada
   async checkInDose(doseId: string): Promise<DoseHistory> {
     const dose = await this.doseHistoryRepository.findOne({
       where: { id: doseId },
-      relations: { treatment: true }
+      relations: {
+        treatment: true,
+      },
     });
 
-    if (!dose) throw new NotFoundException('Dose não encontrada');
-    if (dose.isTaken) throw new BadRequestException('Esta dose já foi marcada como tomada');
+    if (!dose) {
+      throw new NotFoundException('Dose não encontrada');
+    }
+
+    if (dose.isTaken) {
+      throw new BadRequestException(
+        'Esta dose já foi marcada como tomada',
+      );
+    }
 
     dose.isTaken = true;
     dose.takenAt = new Date();
@@ -135,24 +177,23 @@ export class TreatmentsService {
     return this.doseHistoryRepository.save(dose);
   }
 
-  /**
-   * Lista todos os tratamentos de um dono via CPF.
-   */
+  // Função para buscar todos os tratamentos de um usuário ou paciente
   async findAllByCpf(
     cpf: string,
     type: 'user' | 'patient',
     status?: 'ACTIVE' | 'FINISHED' | 'CANCELLED',
   ) {
-
+    // Define o filtro conforme o tipo de perfil informado
     const whereCondition: any =
       type === 'user'
         ? {
-          user: { cpf },
-        }
+            user: { cpf },
+          }
         : {
-          patient: { cpf },
-        };
+            patient: { cpf },
+          };
 
+    // Aplica o filtro de status quando informado
     if (status) {
       whereCondition.status = status;
     }
@@ -165,10 +206,9 @@ export class TreatmentsService {
       },
       order: {
         history: {
-          scheduledTime: "ASC"
+          scheduledTime: 'ASC',
         },
       },
     });
   }
 }
-
