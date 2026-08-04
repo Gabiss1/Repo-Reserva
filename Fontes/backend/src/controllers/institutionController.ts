@@ -2,6 +2,8 @@ import { Controller, Get, Post, Body, Param, ParseUUIDPipe } from '@nestjs/commo
 import { InstitutionsService } from 'src/services/institutionService';
 import { Patient } from 'src/entidades/Patient';
 import { CreateTreatmentDto } from 'src/dtos/treatmentsDTO';
+import { Roles } from 'src/auth/decorators/Roles';
+import { UserRole } from 'src/auth/dto/enums/UserRole';
 
 @Controller('institutions')
 export class InstitutionsController {
@@ -9,8 +11,8 @@ export class InstitutionsController {
 
   // Create de Instituição
   @Post()
-  create(@Body() dto: { name: string; cnpj: string }) {
-    return this.institutionsService.create(dto.name, dto.cnpj);
+  create(@Body() dto: { name: string; cnpj: string, email: string; password: string }) {
+    return this.institutionsService.create(dto.name, dto.cnpj, dto.email, dto.password);
   }
 
   // Read com especificação de id para filtragem especifica de Instituição
@@ -26,6 +28,7 @@ export class InstitutionsController {
   }
 
   // Create de Paciente para relaciona-lo a instituição afiliada
+  @Roles(UserRole.INSTITUTION)
   @Post(':id/patients')
   registerPatient(
     @Param('id', ParseUUIDPipe) id: string,
@@ -35,6 +38,7 @@ export class InstitutionsController {
   }
 
   // Create de tratamento interno de paciente com identificação de cpf
+  @Roles(UserRole.INSTITUTION)
   @Post(':id/patients/:cpf/treatments')
   assignTreatment(
     @Param('id', ParseUUIDPipe) id: string,

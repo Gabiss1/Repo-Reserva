@@ -9,7 +9,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-  ) {}
+  ) { }
 
   // Função para cadastrar um novo usuário
   async create(userData: Partial<User>) {
@@ -67,5 +67,17 @@ export class UsersService {
     }
 
     return user;
+  }
+
+  async findByEmail(email: string): Promise<User | null> {
+
+    return this.userRepository
+      .createQueryBuilder("user")
+      .addSelect("user.password")
+      .where("user.email = :email", {
+        email,
+      })
+      .getOne();
+
   }
 }

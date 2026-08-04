@@ -7,15 +7,26 @@ import { InstitutionsService } from 'src/services/institutionService';
 import { TreatmentModule } from './TreatmentModule';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([
-      Institution,
-      Patient,
-    ]),
-    TreatmentModule,
-  ],
-  controllers: [InstitutionsController],
-  providers: [InstitutionsService],
-  exports: [InstitutionsService],
+
+    imports: [
+        TypeOrmModule.forFeature([
+            Institution,
+            Patient,
+        ]),
+        TreatmentModule
+    ],
+
+    providers: [
+        InstitutionsService,
+    ],
+
+    controllers: [
+        InstitutionsController,
+    ],
+
+    exports: [
+        InstitutionsService,
+    ],
+
 })
 export class InstitutionModule {}

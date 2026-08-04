@@ -5,6 +5,8 @@ import { TreatmentsService } from './treatmentsService';
 import { Institution } from 'src/entidades/Institution';
 import { Patient } from 'src/entidades/Patient';
 
+import * as bcrypt from "bcrypt";
+
 @Injectable()
 export class InstitutionsService {
   constructor(
@@ -16,12 +18,68 @@ export class InstitutionsService {
   ) { }
 
   // Função para criar instituição com nome e cnpj
-  async create(name: string, cnpj: string) {
-    const exists = await this.institutionRepository.findOne({ where: { cnpj } });
-    if (exists) throw new ConflictException('CNPJ já cadastrado');
+  async create(
+    name: string,
+    cnpj: string,
+    email: string,
+    password: string,
+  ) {
 
-    const institution = this.institutionRepository.create({ name, cnpj });
-    return this.institutionRepository.save(institution);
+    const exists =
+      await this.institutionRepository.findOne({
+        where: {
+          cnpj,
+        },
+      });
+
+    if (exists) {
+
+      throw new ConflictException(
+        "CNPJ já cadastrado",
+      );
+
+    }
+
+    const emailExists =
+      await this.institutionRepository.findOne({
+
+        where: {
+          email,
+        }
+
+      });
+
+    if (emailExists) {
+
+      throw new ConflictException(
+        "E-mail já cadastrado"
+      );
+
+    }
+
+    const salt =
+      await bcrypt.genSalt();
+
+    const hashedPassword =
+      await bcrypt.hash(
+        password,
+        salt,
+      );
+
+    const institution =
+      this.institutionRepository.create({
+
+        name,
+        cnpj,
+        email,
+        password: hashedPassword,
+
+      });
+
+    return this.institutionRepository.save(
+      institution,
+    );
+
   }
 
   // Função para buscar todos os pacientes dentro de uma instituição
@@ -51,8 +109,8 @@ export class InstitutionsService {
 
   // Função para adicionar tratamento a paciente 
   async addTreatmentToPatient(
-    institutionId: string, 
-    patientCpf: string, 
+    institutionId: string,
+    patientCpf: string,
     treatmentData: any
   ) {
     // 1. Validar se a instituição existe
@@ -60,9 +118,9 @@ export class InstitutionsService {
 
     // 2. Validar se o paciente pertence a esta instituição
     const patient = await this.patientRepository.findOne({
-      where: { 
-        cpf: patientCpf, 
-        institution: { id: institutionId } 
+      where: {
+        cpf: patientCpf,
+        institution: { id: institutionId }
       }
     });
 
@@ -85,5 +143,22 @@ export class InstitutionsService {
     });
     if (!institution) throw new NotFoundException('Instituição não encontrada');
     return institution;
+  }
+
+  async findByEmail(
+    email: string,
+  ): Promise<Institution | null> {
+
+    return this.institutionRepository
+      .createQueryBuilder("institution")
+      .addSelect("institution.password")
+      .where(
+        "institution.email = :email",
+        {
+          email,
+        },
+      )
+      .getOne();
+
   }
 }

@@ -1,4 +1,4 @@
-import { IsString, IsNumber, IsUUID, IsDateString, IsOptional, Min, ValidateIf } from 'class-validator';
+import { IsString, IsNumber, IsUUID, IsDateString, IsOptional, Min } from 'class-validator';
 
 export class CreateTreatmentDto {
   // Agora aceitamos CPF no lugar de IDs internos para facilitar a busca no Service
