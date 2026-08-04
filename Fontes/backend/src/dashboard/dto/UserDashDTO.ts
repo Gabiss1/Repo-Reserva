@@ -1,24 +1,28 @@
-import { NotificationItemDto } from "./NotificationItemDTO";
+import { AdherenceDto } from "./AdherenceDTO";
+import { NextDoseDto } from "./NextDoseDTO";
+import { TodayAgendaDto } from "./TodayAgendaDTO";
 import { TreatmentSummaryDto } from "./TreatmentSummaryDTO";
-import { AgendaItemDto } from "./AgendaItemDTO";
-import { DashboardStatisticsDto } from "./StatisticDashDTO";
 
 export class UserDashboardDto {
 
     user!: {
 
-        id:string;
+        id: string;
 
-        name:string;
+        name: string;
 
-    }
+        cpf: string;
 
-    statistics!: DashboardStatisticsDto;
+        email: string;
 
-    todayAgenda!: AgendaItemDto[];
+    };
 
-    treatments!: TreatmentSummaryDto[];
+    adherence!: AdherenceDto;
 
-    notifications!: NotificationItemDto[];
+    nextDose?: NextDoseDto;
+
+    activeTreatments!: TreatmentSummaryDto[];
+
+    todayAgenda!: TodayAgendaDto[];
 
 }

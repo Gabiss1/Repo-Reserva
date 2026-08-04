@@ -31,6 +31,7 @@ import { InstitutionTodayDto } from './dto/InnstitutionTodayDTO';
 import { InstitutionStatisticsDto } from './dto/InstitutionStatisticsDTO';
 import { InstitutionsService } from 'src/services/institutionService';
 import { PatientSummaryDto } from './dto/PatientSummaryDTO';
+import { UsersService } from 'src/services/usersService';
 
 @Injectable()
 export class DashboardService {
@@ -53,6 +54,7 @@ export class DashboardService {
         private readonly treatmentsService: TreatmentsService,
         private readonly patientsService: PatientsService,
         private readonly institutionsService: InstitutionsService,
+        private readonly usersService: UsersService,
 
     ) { }
 
@@ -90,23 +92,6 @@ export class DashboardService {
         });
 
     }
-
-    /**
-     * Dashboard do Usuário Autônomo
-     */
-    async getUserDashboard(
-        userId: string,
-    ): Promise<UserDashboardDto> {
-
-        throw new Error(
-            'Método ainda não implementado.',
-        );
-
-    }
-
-    //------------------------------------------------------
-    // MÉTODOS PRIVADOS
-    //------------------------------------------------------
 
     /**
      * Últimos pacientes cadastrados
@@ -299,120 +284,164 @@ export class DashboardService {
 
     }
 
+    //===========================================================User==============================================================================================
+
+    async getUserDashboard(
+        userId: string,
+    ): Promise<UserDashboardDto> {
+    
+        const user =
+            await this.usersService.findOne(userId);
+    
+        const summary =
+            await this.buildTreatmentSummary(
+                user.cpf,
+                user.id,
+                'user',
+            );
+    
+        const agenda =
+            await this.treatmentsService.getDailyAgenda(
+                user.id,
+                'user',
+            );
+    
+        const nextDose =
+            this.getNextDose(
+                summary.treatments,
+            );
+    
+        return {
+    
+            user: {
+    
+                id: user.id,
+    
+                name: user.name,
+    
+                cpf: user.cpf,
+    
+                email: user.email,
+    
+            },
+    
+            adherence:
+                summary.adherence,
+    
+            nextDose:
+                nextDose
+                    ? {
+    
+                        doseId:
+                            nextDose.id,
+    
+                        medication:
+                            nextDose.treatment.medication.name,
+    
+                        scheduledTime:
+                            nextDose.scheduledTime,
+    
+                    }
+                    : undefined,
+    
+            activeTreatments:
+                summary.treatments.map(treatment =>
+                    this.buildTreatmentDto(
+                        treatment,
+                    )
+                ),
+    
+            todayAgenda:
+                this.buildTodayAgenda(
+                    agenda,
+                ),
+    
+        };
+    
+    }
     //===========================================================Institution===================================================================================
 
     async getInstitutionDashboard(
         institutionId: string,
     ): Promise<InstitutionDashboardDto> {
-
+    
         const institution =
             await this.institutionsService.findOne(
                 institutionId,
             );
-
+    
+        const statistics =
+            await this.getInstitutionStatistics(
+                institutionId,
+            );
+    
         const patients =
-            await this.institutionsService.findAllPatients(
-                institutionId,
+            await this.getPatientSummaries(
+                institution.patients,
             );
-
-        const report =
-            await this.reportsService.getInstitutionSummary(
-                institutionId,
-            );
-
+    
         const todayAgenda =
             await this.getInstitutionTodayAgenda(
-                institutionId,
+                institution.patients,
             );
-
+    
         return {
-
+    
             institution: {
-
+    
                 id: institution.id,
-
+    
                 name: institution.name,
-
+    
                 cnpj: institution.cnpj,
-
+    
             },
-
-            statistics:
-                await this.getInstitutionStatistics(
-                    institutionId,
-                    report,
-                    todayAgenda,
-                ),
-
-            today:
-                this.getInstitutionToday(
-                    todayAgenda,
-                ),
-
-            patients:
-                await this.getPatientSummaries(
-                    patients,
-                ),
-
+    
+            statistics,
+    
+            patients,
+    
+            todayAgenda,
+    
         };
-
+    
     }
 
     private async getInstitutionTodayAgenda(
-        institutionId: string,
-    ): Promise<DoseHistory[]> {
-
-        const start = new Date();
-        start.setHours(0, 0, 0, 0);
-
-        const end = new Date();
-        end.setHours(23, 59, 59, 999);
-
-        return this.doseHistoryRepository.find({
-
-            where: {
-
-                scheduledTime: Between(
-                    start,
-                    end,
-                ),
-
-                treatment: {
-
-                    patient: {
-
-                        institution: {
-
-                            id: institutionId,
-
-                        },
-
-                    },
-
-                },
-
-            },
-
-            relations: {
-
-                treatment: {
-
-                    medication: true,
-
-                    patient: true,
-
-                },
-
-            },
-
-            order: {
-
-                scheduledTime: 'ASC',
-
-            },
-
-        });
-
+        patients: Patient[],
+    ): Promise<TodayAgendaDto[]> {
+    
+        const agenda: TodayAgendaDto[] = [];
+    
+        for (const patient of patients) {
+    
+            const patientAgenda =
+                await this.treatmentsService.getDailyAgenda(
+                    patient.id,
+                    'patient',
+                );
+    
+            const dto =
+                this.buildTodayAgenda(patientAgenda);
+    
+            dto.forEach(item => {
+    
+                item.patientId = patient.id;
+    
+                item.patientName = patient.name;
+    
+            });
+    
+            agenda.push(...dto);
+    
+        }
+    
+        return agenda.sort(
+            (a, b) =>
+                a.scheduledTime.getTime() -
+                b.scheduledTime.getTime(),
+        );
+    
     }
 
     private getInstitutionToday(
@@ -452,51 +481,92 @@ export class DashboardService {
 
     private async getInstitutionStatistics(
         institutionId: string,
-        report: any,
-        agenda: DoseHistory[],
     ): Promise<InstitutionStatisticsDto> {
-
-        const activeTreatments =
-            await this.treatmentRepository.count({
-
-                where: {
-
-                    status: 'ACTIVE',
-
-                    patient: {
-
-                        institution: {
-
-                            id: institutionId,
-
-                        },
-
-                    },
-
-                },
-
-            });
-
-        return {
-
-            totalPatients:
-                report.activePatients,
-
-            activeTreatments,
-
-            adherencePercentage:
-                report.overallAdherence,
-
-            dosesToday:
-                agenda.length,
-
-            dosesTakenToday:
+    
+        const institution =
+            await this.institutionsService.findOne(institutionId);
+    
+        const patientIds =
+            institution.patients.map(patient => patient.id);
+    
+        let activeTreatments = 0;
+        let todayDoses = 0;
+        let takenToday = 0;
+        let missedToday = 0;
+    
+        const today = new Date();
+    
+        const startOfDay = new Date(today);
+        startOfDay.setHours(0, 0, 0, 0);
+    
+        const endOfDay = new Date(today);
+        endOfDay.setHours(23, 59, 59, 999);
+    
+        let totalDoses = 0;
+        let totalTaken = 0;
+    
+        for (const patientId of patientIds) {
+    
+            const agenda =
+                await this.treatmentsService.getDailyAgenda(
+                    patientId,
+                    'patient',
+                    today,
+                );
+    
+            todayDoses += agenda.length;
+    
+            takenToday +=
+                agenda.filter(dose => dose.isTaken).length;
+    
+            missedToday +=
                 agenda.filter(
-                    dose => dose.isTaken,
-                ).length,
-
+                    dose =>
+                        !dose.isTaken &&
+                        dose.scheduledTime < new Date(),
+                ).length;
+    
+            const adherence =
+                await this.reportsService.getAdherence(
+                    patientId,
+                    'patient',
+                );
+    
+            totalDoses += adherence.totalDoses;
+            totalTaken += adherence.takenDoses;
+    
+            const patient =
+                await this.patientsService.findOne(patientId);
+    
+            activeTreatments +=
+                patient.treatments.filter(
+                    treatment =>
+                        treatment.status === 'ACTIVE',
+                ).length;
+        }
+    
+        return {
+    
+            totalPatients:
+                institution.patients.length,
+    
+            activeTreatments,
+    
+            todayDoses,
+    
+            takenToday,
+    
+            missedToday,
+    
+            adherencePercentage:
+                totalDoses === 0
+                    ? 0
+                    : Math.round(
+                          (totalTaken / totalDoses) * 100,
+                      ),
+    
         };
-
+    
     }
 
     private async getPatientSummaries(
