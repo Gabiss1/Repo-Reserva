@@ -33,6 +33,10 @@ import { Institution } from './entidades/Institution';
 
 // Gateway
 import { NotificationsGateway } from './gateways/notifications';
+import { ConfigModule } from '@nestjs/config';
+import { AuthModule } from './auth/AuthModule';
+import { InstitutionModule } from './modules/InstitutionModule';
+import { UserModule } from './modules/UserModule';
 
 @Module({
   imports: [
@@ -40,29 +44,33 @@ import { NotificationsGateway } from './gateways/notifications';
       type: 'mysql',
       host: 'localhost',
       port: 3306,
-      username: 'root', 
-      password: 'root',    
+      username: 'root',
+      password: '713406Gab#18042006',
       database: 'medicapp',
       entities: [
-        User, 
-        Patient, 
-        Institution, 
-        Treatment, 
-        Medication, 
-        DoseHistory, 
+        User,
+        Patient,
+        Institution,
+        Treatment,
+        Medication,
+        DoseHistory,
         Category
       ],
-      synchronize: true, 
-      logging: true,    
+      synchronize: true,
+      logging: true,
     }),
     TypeOrmModule.forFeature([User, Treatment, Medication, DoseHistory, Category, Patient, Institution]),
-    ScheduleModule.forRoot()
+    ScheduleModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true, }),
+    AuthModule,
+    UserModule,
+    InstitutionModule,
   ],
 
   controllers: [
     TreatmentsController,
-    UsersController, 
-    ReportsController, 
+    UsersController,
+    ReportsController,
     CategoriesController,
     TreatmentsController,
     MedicationsController,
@@ -71,9 +79,9 @@ import { NotificationsGateway } from './gateways/notifications';
   ],
 
   providers: [
-    TreatmentsService, 
+    TreatmentsService,
     UsersService,
-    NotificationsService, 
+    NotificationsService,
     NotificationsGateway,
     ReportsService,
     CategoriesService,
@@ -82,4 +90,4 @@ import { NotificationsGateway } from './gateways/notifications';
     PatientsService
   ],
 })
-export class AppModule {}
+export class AppModule { }

@@ -1,9 +1,6 @@
 import {
     Injectable,
-    NotFoundException,
 } from '@nestjs/common';
-
-import { Between } from 'typeorm';
 
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -13,7 +10,6 @@ import { Institution } from '../entidades/Institution';
 import { Patient } from '../entidades/Patient';
 import { Treatment } from '../entidades/Treatment';
 import { DoseHistory } from '../entidades/DoseHistory';
-import { Medication } from '../entidades/Medication';
 
 import { InstitutionDashboardDto } from './dto/InstitutionDashDTO';
 import { PatientDashboardDto } from './dto/PatientDashDTO';
@@ -23,11 +19,7 @@ import { PatientsService } from 'src/services/patientsService';
 import { ReportsService } from 'src/services/reportsService';
 import { TreatmentsService } from 'src/services/treatmentsService';
 import { TreatmentSummaryDto } from './dto/TreatmentSummaryDTO';
-import { DoseHistorySummaryDto } from './dto/DoseHistorySummaryDTO';
 import { TodayAgendaDto } from './dto/TodayAgendaDTO';
-import { AdherenceDto } from './dto/AdherenceDTO';
-import { PatientStatisticsDto } from './dto/PatientStatisticsDTO';
-import { InstitutionTodayDto } from './dto/InnstitutionTodayDTO';
 import { InstitutionStatisticsDto } from './dto/InstitutionStatisticsDTO';
 import { InstitutionsService } from 'src/services/institutionService';
 import { PatientSummaryDto } from './dto/PatientSummaryDTO';
@@ -59,12 +51,16 @@ export class DashboardService {
 
     ) { }
 
-    // Função para buscar todas as doses relacionadas aos pacientes de uma instituição
+    /**
+     * Dashboard principal da Instituição
+     */
+
     private async getInstitutionDoses(
         institutionId: string,
     ): Promise<DoseHistory[]> {
 
         return this.doseHistoryRepository.find({
+
             where: {
                 treatment: {
                     patient: {
@@ -74,48 +70,67 @@ export class DashboardService {
                     },
                 },
             },
+
             relations: {
                 treatment: {
                     medication: true,
                     patient: true,
                 },
             },
+
             order: {
                 scheduledTime: 'ASC',
             },
+
         });
 
     }
 
-    // Função para buscar os pacientes cadastrados recentemente em uma instituição
+    /**
+     * Últimos pacientes cadastrados
+     */
     private async getRecentPatients(
         institutionId: string,
     ) {
+
         const patients =
             await this.patientRepository.find({
+
                 where: {
                     institution: {
                         id: institutionId,
                     },
                 },
+
                 order: {
                     createdAt: 'DESC',
                 },
+
                 take: 5,
+
             });
+
         return patients.map(patient => ({
+
             id: patient.id,
+
             name: patient.name,
+
             cpf: patient.cpf,
+
             createdAt: patient.createdAt,
+
         }));
 
     }
 
-    // Função para buscar a agenda de doses da instituição no dia atual
+    /**
+     * Agenda do dia
+     */
     private async getTodayAgenda(
         institutionId: string,
     ) {
+
         const today = new Date();
 
         const start = new Date(today);
@@ -126,11 +141,14 @@ export class DashboardService {
 
         const doses =
             await this.doseHistoryRepository.find({
+
                 where: {
+
                     scheduledTime: Between(
                         start,
                         end,
                     ),
+
                     treatment: {
                         patient: {
                             institution: {
@@ -138,30 +156,52 @@ export class DashboardService {
                             },
                         },
                     },
+
                 },
+
                 relations: {
+
                     treatment: {
+
                         medication: true,
+
                         patient: true,
+
                     },
+
                 },
+
                 order: {
+
                     scheduledTime: 'ASC',
+
                 },
+
             });
+
         return doses.map(dose => ({
+
             id: dose.id,
+
             patient: dose.treatment.patient.name,
+
             medication: dose.treatment.medication.name,
+
             scheduledTime: dose.scheduledTime,
+
             isTaken: dose.isTaken,
+
         }));
+
     }
 
-    // Função para gerar os dados de adesão dos últimos sete dias
+    /**
+     * Gráfico dos últimos dias
+     */
     private async getAdherenceChart(
         institutionId: string,
     ) {
+
         const chart: any[] = [];
 
         const today = new Date();
@@ -180,19 +220,28 @@ export class DashboardService {
 
             const doses =
                 await this.doseHistoryRepository.find({
+
                     where: {
+
                         scheduledTime: Between(
                             start,
                             end,
                         ),
+
                         treatment: {
+
                             patient: {
+
                                 institution: {
                                     id: institutionId,
                                 },
+
                             },
+
                         },
+
                     },
+
                 });
 
             const total = doses.length;
@@ -208,17 +257,24 @@ export class DashboardService {
                         weekday: 'short',
                     },
                 ),
+
                 taken,
+
                 total,
+
                 percentage:
                     total === 0
                         ? 0
                         : Math.round(
                             (taken / total) * 100,
                         ),
+
             });
+
         }
+
         return chart;
+
     }
 
     //===========================================================User==============================================================================================
@@ -358,9 +414,9 @@ export class DashboardService {
                 a.scheduledTime.getTime() -
                 b.scheduledTime.getTime(),
         );
+    
     }
 
-    // Função para calcular doses pendentes e atrasadas da instituição
     private getInstitutionToday(
         agenda: DoseHistory[],
     ): InstitutionTodayDto {
@@ -382,13 +438,18 @@ export class DashboardService {
             );
 
         return {
+
             pendingDoses:
                 pending.length,
+
             missedDoses:
                 missed.length,
+
             nextDoseTime:
                 pending[0]?.scheduledTime,
+
         };
+
     }
 
     // Função para calcular estatísticas gerais dos pacientes da instituição
@@ -713,7 +774,6 @@ export class DashboardService {
             )[0];
     }
 
-    // Função para buscar o histórico recente de doses tomadas pelo paciente
     private async getRecentHistory(
         patientId: string,
     ) {
@@ -721,26 +781,43 @@ export class DashboardService {
         return this.doseHistoryRepository.find({
 
             where: {
+
                 treatment: {
+
                     patient: {
+
                         id: patientId,
+
                     },
+
                 },
+
                 isTaken: true,
+
             },
+
             relations: {
+
                 treatment: {
+
                     medication: true,
+
                 },
+
             },
+
             take: 10,
+
             order: {
+
                 takenAt: 'DESC',
+
             },
+
         });
+
     }
 
-    // Função para calcular estatísticas do paciente no dia atual
     private getPatientStatistics(
         agenda: DoseHistory[],
         adherence: AdherenceDto,
@@ -771,37 +848,33 @@ export class DashboardService {
             takenToday,
 
             pendingToday,
+
         };
+
     }
 
-    // Função para converter agenda de doses em DTO
     private getTodayAgendaDto(
         agenda: DoseHistory[],
     ): TodayAgendaDto[] {
 
         return agenda.map(dose => ({
 
-            doseId:
-                dose.id,
+            doseId: dose.id,
 
-            medication:
-                dose.treatment.medication.name,
+            medication: dose.treatment.medication.name,
 
-            dosage:
-                dose.treatment.medication.strength,
+            dosage: dose.treatment.medication.strength,
 
-            scheduledTime:
-                dose.scheduledTime,
+            scheduledTime: dose.scheduledTime,
 
-            isTaken:
-                dose.isTaken,
+            isTaken: dose.isTaken,
 
-            canCheckIn:
-                !dose.isTaken,
+            canCheckIn: !dose.isTaken,
+
         }));
+
     }
 
-    // Função para converter histórico de doses em DTO
     private getRecentHistoryDto(
         history: DoseHistory[],
     ): DoseHistorySummaryDto[] {
@@ -816,6 +889,9 @@ export class DashboardService {
 
             takenAt:
                 dose.takenAt,
+
         }));
+
     }
+
 }

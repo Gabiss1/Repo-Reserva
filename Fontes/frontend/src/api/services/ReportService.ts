@@ -1,5 +1,5 @@
-import api from "../axios";
-import { Report } from "../types/Report";
+import api from "../api";
+import { Report } from "../types/entities/Report";
 
 export async function getReports(
     patientId:number

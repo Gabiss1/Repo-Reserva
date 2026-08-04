@@ -1,5 +1,5 @@
-import api from "../axios";
-import { Patient } from "../types/Patient";
+import api from "../api";
+import { Patient } from "../types/entities/Patient";
 
 
 export async function getPatients(): Promise<Patient[]> {

@@ -8,10 +8,10 @@ import {
 import {
     login as loginService,
     logout as logoutService
-} from "../services/authService";
+} from "../api/services/AuthService";
 
-import { User } from "../api/types/User";
-
+import { User } from "../api/types/entities/User";
+import { LoginResponse } from "../api/types/auth/LoginResponse";
 
 interface AuthContextData {
 
@@ -20,79 +20,103 @@ interface AuthContextData {
     token: string | null;
 
     login(
-        email:string,
-        password:string
-    ):Promise<void>;
+        email: string,
+        password: string
+    ): Promise<LoginResponse>;
 
-    logout():void;
+    logout(): void;
 
-    isAuthenticated:boolean;
+    isAuthenticated: boolean;
+
 }
 
-
-const AuthContext = createContext<AuthContextData>(
-    {} as AuthContextData
+const AuthContext = createContext<AuthContextData | null>(
+    null
 );
 
 
 
 export function AuthProvider({
     children
-}:{
-    children:React.ReactNode
-}){
+}: {
+    children: React.ReactNode
+}) {
 
+    const [user, setUser] = useState<User | null>(
+        JSON.parse(
+            localStorage.getItem("user") || "null"
+        )
+    );
 
-    const [user,setUser] = useState<User | null>(null);
-
-    const [token,setToken] = useState<string | null>(
+    const [token, setToken] = useState<string | null>(
         localStorage.getItem("token")
     );
 
 
 
     async function login(
-        email:string,
-        password:string
-    ){
+        email: string,
+        password: string
+    ): Promise<LoginResponse> {
 
-        const response = await loginService(
-            email,
-            password
-        );
-
+        const response =
+            await loginService(
+                email,
+                password,
+            );
 
         setUser(response.user);
 
         setToken(response.token);
+
+        localStorage.setItem(
+            "user",
+            JSON.stringify(response.user),
+        );
+
+        return response;
+
     }
 
 
 
-    function logout(){
+    function logout() {
 
         logoutService();
+
+        localStorage.removeItem("user");
 
         setUser(null);
 
         setToken(null);
+
     }
 
 
 
-    useEffect(()=>{
+    useEffect(() => {
 
         const storedToken =
             localStorage.getItem("token");
 
+        const storedUser =
+            localStorage.getItem("user");
 
-        if(storedToken){
+        if (storedToken) {
 
             setToken(storedToken);
 
         }
 
-    },[]);
+        if (storedUser) {
+
+            setUser(
+                JSON.parse(storedUser)
+            );
+
+        }
+
+    }, []);
 
 
 
@@ -116,12 +140,12 @@ export function AuthProvider({
 
 
 
-export function useAuth(){
+export function useAuth() {
 
     const context = useContext(AuthContext);
 
 
-    if(!context){
+    if (!context) {
 
         throw new Error(
             "useAuth deve ser usado dentro de AuthProvider"

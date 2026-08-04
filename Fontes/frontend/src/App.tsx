@@ -1,23 +1,41 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
-import { LoginPage } from './pages/LoginPage';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import Login from "./pages/Login";
 import PatientDashboard from "./pages/PatientDashboard";
-import { InstitutionDashboard } from './pages/InstitutionDashboard';
+import InstitutionDashboard from "./pages/InstitutionDashboard";
+import { AuthProvider } from "./contexts/AuthContexts";
 
-function App() {
-  return (
-    <Routes>
-      <Route path="/login" element={<LoginPage />} />
-      
-      {/* Visão do Paciente */}
-      <Route path="/dashboard" element={<PatientDashboard />} />
-      
-      {/* Visão da Instituição */}
-      <Route path="/admin" element={<InstitutionDashboard />} />
+export default function App() {
 
-      {/* Redirecionamento Padrão */}
-      <Route path="/" element={<Navigate to="/login" replace />} />
-    </Routes>
-  );
+    return (
+
+        <BrowserRouter>
+
+            <AuthProvider>
+
+                <Routes>
+
+                    <Route
+                        path="/"
+                        element={<Login />}
+                    />
+
+                    <Route
+                        path="/dashboard"
+                        element={<PatientDashboard />}
+                    />
+
+                    <Route
+                        path="/institution"
+                        element={<InstitutionDashboard />}
+                    />
+
+                </Routes>
+
+            </AuthProvider>
+
+        </BrowserRouter>
+
+    );
+
 }
-
-export default App;
