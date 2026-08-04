@@ -20,13 +20,13 @@ interface AuthContextData {
     token: string | null;
 
     login(
-        email:string,
-        password:string
-    ):Promise<void>;
+        email: string,
+        password: string
+    ): Promise<void>;
 
-    logout():void;
+    logout(): void;
 
-    isAuthenticated:boolean;
+    isAuthenticated: boolean;
 }
 
 
@@ -38,33 +38,33 @@ const AuthContext = createContext<AuthContextData | null>(
 
 export function AuthProvider({
     children
-}:{
-    children:React.ReactNode
-}){
+}: {
+    children: React.ReactNode
+}) {
     const navigate = useNavigate();
 
-    const [user,setUser] = useState<User | null>(
+    const [user, setUser] = useState<User | null>(
         JSON.parse(
             localStorage.getItem("user") || "null"
         )
     );
 
-    const [token,setToken] = useState<string | null>(
+    const [token, setToken] = useState<string | null>(
         localStorage.getItem("token")
     );
 
 
 
     async function login(
-        email:string,
-        password:string
-    ){
+        email: string,
+        password: string
+    ) {
 
-        const response = await loginService(
-            email,
-            password
-        );
-
+        const response =
+            await loginService(
+                email,
+                password,
+            );
 
         setUser(response.user);
 
@@ -77,7 +77,7 @@ export function AuthProvider({
 
 
 
-    function logout(){
+    function logout() {
 
         logoutService();
 
@@ -88,19 +88,19 @@ export function AuthProvider({
 
 
 
-    useEffect(()=>{
+    useEffect(() => {
 
         const storedToken =
             localStorage.getItem("token");
 
 
-        if(storedToken){
+        if (storedToken) {
 
             setToken(storedToken);
 
         }
 
-    },[]);
+    }, []);
 
 
 
@@ -124,12 +124,12 @@ export function AuthProvider({
 
 
 
-export function useAuth(){
+export function useAuth() {
 
     const context = useContext(AuthContext);
 
 
-    if(!context){
+    if (!context) {
 
         throw new Error(
             "useAuth deve ser usado dentro de AuthProvider"

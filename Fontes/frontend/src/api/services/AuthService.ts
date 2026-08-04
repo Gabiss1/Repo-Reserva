@@ -1,4 +1,4 @@
-import api from "../axios";
+import api from "../api";
 import { User } from "../types/User";
 
 
@@ -13,31 +13,22 @@ interface LoginResponse {
 
 
 export async function login(
-    email:string,
-    password:string
-):Promise<LoginResponse>{
-
+    email: string,
+    password: string,
+): Promise<LoginResponse> {
 
     const response = await api.post(
         "/auth/login",
         {
             email,
-            password
-        }
+            password,
+        },
     );
-
 
     localStorage.setItem(
         "token",
-        response.data.token
+        response.data.token,
     );
-
-
-    localStorage.setItem(
-        "user",
-        JSON.stringify(response.data.user)
-    );
-
 
     return response.data;
 
@@ -48,7 +39,5 @@ export async function login(
 export function logout(){
 
     localStorage.removeItem("token");
-
-    localStorage.removeItem("user");
 
 }

@@ -1,4 +1,4 @@
-import api from "../axios";
+import api from "../api";
 
 export async function getPatientDashboard(id: string) {
     const { data } = await api.get(`/dashboard/patient/${id}`);

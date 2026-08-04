@@ -1,4 +1,4 @@
-import api from "../axios";
+import api from "../api";
 import { Report } from "../types/Report";
 
 export async function getReports(
