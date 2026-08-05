@@ -1,15 +1,19 @@
-import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { User } from 'src/entidades/User';
-import * as bcrypt from 'bcrypt';
+import {
+  Injectable,
+  ConflictException,
+  NotFoundException,
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { User } from "src/entidades/User";
+import * as bcrypt from "bcrypt";
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private userRepository: Repository<User>,
-  ) { }
+    private userRepository: Repository<User>
+  ) {}
 
   // Função para cadastrar um novo usuário
   async create(userData: Partial<User>) {
@@ -19,7 +23,7 @@ export class UsersService {
     });
 
     if (emailExists) {
-      throw new ConflictException('E-mail já cadastrado');
+      throw new ConflictException("E-mail já cadastrado");
     }
 
     // Criptografa a senha antes de armazená-la no banco de dados
@@ -50,7 +54,7 @@ export class UsersService {
     });
 
     if (!user) {
-      throw new NotFoundException('Usuário não encontrado');
+      throw new NotFoundException("Usuário não encontrado");
     }
 
     return user;
@@ -63,14 +67,13 @@ export class UsersService {
     });
 
     if (!user) {
-      throw new NotFoundException('Usuário não encontrado com este CPF');
+      throw new NotFoundException("Usuário não encontrado com este CPF");
     }
 
     return user;
   }
 
   async findByEmail(email: string): Promise<User | null> {
-
     return this.userRepository
       .createQueryBuilder("user")
       .addSelect("user.password")
@@ -78,6 +81,45 @@ export class UsersService {
         email,
       })
       .getOne();
+  }
 
+  async update(id: string, data: Partial<User>) {
+    const user = await this.findOne(id);
+
+    if (data.password) {
+      const salt = await bcrypt.genSalt();
+
+      data.password = await bcrypt.hash(data.password, salt);
+    }
+
+    Object.assign(user, data);
+
+    return this.userRepository.save(user);
+  }
+
+  async updatePassword(id: string, oldPassword: string, newPassword: string) {
+    const user = await this.userRepository.findOne({
+      where: {
+        id,
+      },
+      select: {
+        id: true,
+        password: true,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException("Usuário não encontrado");
+    }
+
+    const passwordValid = await bcrypt.compare(oldPassword, user.password);
+
+    if (!passwordValid) {
+      throw new ConflictException("Senha atual incorreta");
+    }
+
+    user.password = await bcrypt.hash(newPassword, 10);
+
+    return this.userRepository.save(user);
   }
 }

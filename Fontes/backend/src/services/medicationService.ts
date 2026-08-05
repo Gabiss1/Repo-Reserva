@@ -1,13 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like } from 'typeorm';
-import { Medication } from 'src/entidades/Medication';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository, Like } from "typeorm";
+import { Medication } from "src/entidades/Medication";
 
 @Injectable()
 export class MedicationsService {
   constructor(
     @InjectRepository(Medication)
-    private medicationRepository: Repository<Medication>,
+    private medicationRepository: Repository<Medication>
   ) {}
 
   // Função para cadastrar um novo medicamento
@@ -22,7 +22,7 @@ export class MedicationsService {
       relations: {
         category: true,
       },
-      order: { name: 'ASC' },
+      order: { name: "ASC" },
     });
   }
 
@@ -34,7 +34,7 @@ export class MedicationsService {
         category: true,
       },
       take: 10,
-      order: { name: 'ASC' },
+      order: { name: "ASC" },
     });
   }
 
@@ -47,7 +47,7 @@ export class MedicationsService {
       },
     });
 
-    if (!medication) throw new NotFoundException('Medicamento não encontrado');
+    if (!medication) throw new NotFoundException("Medicamento não encontrado");
 
     return medication;
   }
@@ -56,5 +56,13 @@ export class MedicationsService {
   async remove(id: string) {
     const medication = await this.findOne(id);
     return this.medicationRepository.remove(medication);
+  }
+
+  async update(id: string, data: Partial<Medication>) {
+    const medication = await this.findOne(id);
+
+    Object.assign(medication, data);
+
+    return this.medicationRepository.save(medication);
   }
 }

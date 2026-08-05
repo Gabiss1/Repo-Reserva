@@ -211,4 +211,38 @@ export class TreatmentsService {
       },
     });
   }
+
+  async update(
+    id:string,
+    data:Partial<Treatment>
+  ){
+  
+    const treatment =
+      await this.treatmentRepository.findOne({
+        where:{
+          id
+        }
+      });
+  
+  
+    if(!treatment){
+  
+      throw new NotFoundException(
+        "Tratamento não encontrado"
+      );
+  
+    }
+  
+  
+    Object.assign(
+      treatment,
+      data
+    );
+  
+  
+    return this.treatmentRepository.save(
+      treatment
+    );
+  
+  }
 }

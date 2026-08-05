@@ -1,0 +1,105 @@
+.profile-container {
+
+    min-height:100vh;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    padding:30px;
+
+}
+
+
+
+.profile-card {
+
+
+    width:400px;
+
+
+    background:white;
+
+
+    padding:30px;
+
+
+    border-radius:12px;
+
+
+    box-shadow:
+        0 10px 25px
+        rgba(0,0,0,.08);
+
+}
+
+
+
+.profile-card h1 {
+
+    margin-bottom:25px;
+
+}
+
+
+
+.profile-card label {
+
+
+    display:block;
+
+    margin-top:15px;
+
+    margin-bottom:5px;
+
+}
+
+
+
+.profile-card input {
+
+
+    width:100%;
+
+    padding:12px;
+
+
+    border:
+        1px solid #ddd;
+
+
+    border-radius:8px;
+
+}
+
+
+
+.profile-card button {
+
+
+    margin-top:25px;
+
+
+    width:100%;
+
+
+    padding:12px;
+
+
+    border:none;
+
+
+    border-radius:8px;
+
+
+    background:#2563eb;
+
+
+    color:white;
+
+
+    font-weight:bold;
+
+}

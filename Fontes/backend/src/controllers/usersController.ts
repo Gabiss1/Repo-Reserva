@@ -1,8 +1,18 @@
-import { Controller, Get, Post, Body, Param, ParseUUIDPipe } from '@nestjs/common';
-import { UsersService } from 'src/services/usersService';
-import { CreateUserDto } from 'src/dtos/userDTO';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Patch,
+  ParseUUIDPipe,
+} from "@nestjs/common";
+import { UsersService } from "src/services/usersService";
+import { CreateUserDto } from "src/dtos/userDTO";
+import { UpdatePasswordDto } from "src/dashboard/dto/UpdatePasswordDTO";
+import { UpdateUserDto } from "src/dashboard/dto/UpdateUserDTO";
 
-@Controller('users')
+@Controller("users")
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -19,8 +29,34 @@ export class UsersController {
   }
 
   // Read com especificação de id para filtragem especifica de Usuário
-  @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
+  @Get(":id")
+  findOne(@Param("id", ParseUUIDPipe) id: string) {
     return this.usersService.findOne(id);
+  }
+
+  @Patch(":id")
+  update(
+    @Param("id", ParseUUIDPipe)
+    id: string,
+
+    @Body()
+    data: UpdateUserDto
+  ) {
+    return this.usersService.update(id, data);
+  }
+
+  @Patch(":id/password")
+  updatePassword(
+    @Param("id", ParseUUIDPipe)
+    id: string,
+
+    @Body()
+    data: UpdatePasswordDto
+  ) {
+    return this.usersService.updatePassword(
+      id,
+      data.oldPassword,
+      data.newPassword
+    );
   }
 }

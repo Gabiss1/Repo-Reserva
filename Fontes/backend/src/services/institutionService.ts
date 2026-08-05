@@ -1,11 +1,16 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { TreatmentsService } from './treatmentsService';
-import { Institution } from 'src/entidades/Institution';
-import { Patient } from 'src/entidades/Patient';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { TreatmentsService } from "./treatmentsService";
+import { Institution } from "src/entidades/Institution";
+import { Patient } from "src/entidades/Patient";
 
 import * as bcrypt from "bcrypt";
+import { CreateInstitutionDto } from "src/dashboard/dto/CreateInstitutionDTO";
 
 @Injectable()
 export class InstitutionsService {
@@ -15,71 +20,42 @@ export class InstitutionsService {
     @InjectRepository(Patient)
     private patientRepository: Repository<Patient>,
     private readonly treatmentsService: TreatmentsService
-  ) { }
+  ) {}
 
   // Função para criar instituição com nome e cnpj
-  async create(
-    name: string,
-    cnpj: string,
-    email: string,
-    password: string,
-  ) {
+  async create(dto: CreateInstitutionDto) {
+    const { name, cnpj, email, password } = dto;
 
-    const exists =
-      await this.institutionRepository.findOne({
-        where: {
-          cnpj,
-        },
-      });
+    const cnpjExists = await this.institutionRepository.findOne({
+      where: {
+        cnpj,
+      },
+    });
 
-    if (exists) {
-
-      throw new ConflictException(
-        "CNPJ já cadastrado",
-      );
-
+    if (cnpjExists) {
+      throw new ConflictException("CNPJ já cadastrado");
     }
 
-    const emailExists =
-      await this.institutionRepository.findOne({
-
-        where: {
-          email,
-        }
-
-      });
+    const emailExists = await this.institutionRepository.findOne({
+      where: {
+        email,
+      },
+    });
 
     if (emailExists) {
-
-      throw new ConflictException(
-        "E-mail já cadastrado"
-      );
-
+      throw new ConflictException("E-mail já cadastrado");
     }
 
-    const salt =
-      await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    const hashedPassword =
-      await bcrypt.hash(
-        password,
-        salt,
-      );
+    const institution = this.institutionRepository.create({
+      name,
+      cnpj,
+      email,
+      password: hashedPassword,
+    });
 
-    const institution =
-      this.institutionRepository.create({
-
-        name,
-        cnpj,
-        email,
-        password: hashedPassword,
-
-      });
-
-    return this.institutionRepository.save(
-      institution,
-    );
-
+    return this.institutionRepository.save(institution);
   }
 
   // Função para buscar todos os pacientes dentro de uma instituição
@@ -87,27 +63,29 @@ export class InstitutionsService {
     const institution = await this.institutionRepository.findOne({
       where: { id: institutionId },
       relations: {
-        patients: true
-      }
+        patients: true,
+      },
     });
 
-    if (!institution) throw new NotFoundException('Instituição não encontrada');
+    if (!institution) throw new NotFoundException("Instituição não encontrada");
     return institution.patients;
   }
 
-  // Função para adicionar paciente dentro de uma instituição 
+  // Função para adicionar paciente dentro de uma instituição
   async addPatient(institutionId: string, patientData: Partial<Patient>) {
-    const institution = await this.institutionRepository.findOne({ where: { id: institutionId } });
-    if (!institution) throw new NotFoundException('Instituição não encontrada');
+    const institution = await this.institutionRepository.findOne({
+      where: { id: institutionId },
+    });
+    if (!institution) throw new NotFoundException("Instituição não encontrada");
 
     const patient = this.patientRepository.create({
       ...patientData,
-      institution
+      institution,
     });
     return this.patientRepository.save(patient);
   }
 
-  // Função para adicionar tratamento a paciente 
+  // Função para adicionar tratamento a paciente
   async addTreatmentToPatient(
     institutionId: string,
     patientCpf: string,
@@ -120,16 +98,17 @@ export class InstitutionsService {
     const patient = await this.patientRepository.findOne({
       where: {
         cpf: patientCpf,
-        institution: { id: institutionId }
-      }
+        institution: { id: institutionId },
+      },
     });
 
-    if (!patient) throw new NotFoundException('Paciente não encontrado nesta instituição');
+    if (!patient)
+      throw new NotFoundException("Paciente não encontrado nesta instituição");
 
     // 3. Delegar a criação para o TreatmentsService (que gera as doses)
     return this.treatmentsService.create({
       ...treatmentData,
-      patientCpf: patient.cpf
+      patientCpf: patient.cpf,
     });
   }
 
@@ -138,27 +117,62 @@ export class InstitutionsService {
     const institution = await this.institutionRepository.findOne({
       where: { id },
       relations: {
-        patients: true
-      }
+        patients: true,
+      },
     });
-    if (!institution) throw new NotFoundException('Instituição não encontrada');
+    if (!institution) throw new NotFoundException("Instituição não encontrada");
     return institution;
   }
 
-  async findByEmail(
-    email: string,
-  ): Promise<Institution | null> {
-
+  async findByEmail(email: string): Promise<Institution | null> {
     return this.institutionRepository
       .createQueryBuilder("institution")
       .addSelect("institution.password")
-      .where(
-        "institution.email = :email",
-        {
-          email,
-        },
-      )
+      .where("institution.email = :email", {
+        email,
+      })
+      .getOne();
+  }
+
+  async update(id: string, data: Partial<Institution>) {
+    const institution = await this.findOne(id);
+
+    delete data.password;
+
+    Object.assign(institution, data);
+
+    return this.institutionRepository.save(institution);
+  }
+
+  async updatePassword(id: string, oldPassword: string, newPassword: string) {
+    const institution = await this.institutionRepository
+      .createQueryBuilder("institution")
+      .addSelect("institution.password")
+      .where("institution.id = :id", { id })
       .getOne();
 
+    if (!institution) {
+      throw new NotFoundException("Instituição não encontrada");
+    }
+
+    const valid = await bcrypt.compare(oldPassword, institution.password);
+
+    if (!valid) {
+      throw new ConflictException("Senha atual incorreta");
+    }
+
+    institution.password = await bcrypt.hash(newPassword, 10);
+
+    return this.institutionRepository.save(institution);
+  }
+
+  async findByCnpj(cnpj: string): Promise<Institution | null> {
+    return this.institutionRepository
+      .createQueryBuilder("institution")
+      .addSelect("institution.password")
+      .where("institution.cnpj = :cnpj", {
+        cnpj,
+      })
+      .getOne();
   }
 }

@@ -1,13 +1,17 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Patient } from 'src/entidades/Patient';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { Patient } from "src/entidades/Patient";
 
 @Injectable()
 export class PatientsService {
   constructor(
     @InjectRepository(Patient)
-    private patientRepository: Repository<Patient>,
+    private patientRepository: Repository<Patient>
   ) {}
 
   // Função para buscar todos os pacientes cadastrados
@@ -16,7 +20,7 @@ export class PatientsService {
       relations: {
         institution: true,
       },
-      order: { name: 'ASC' },
+      order: { name: "ASC" },
     });
   }
 
@@ -32,7 +36,7 @@ export class PatientsService {
       },
     });
 
-    if (!patient) throw new NotFoundException('Paciente não encontrado');
+    if (!patient) throw new NotFoundException("Paciente não encontrado");
 
     return patient;
   }
@@ -46,7 +50,8 @@ export class PatientsService {
       },
     });
 
-    if (!patient) throw new NotFoundException('Paciente não encontrado com este CPF');
+    if (!patient)
+      throw new NotFoundException("Paciente não encontrado com este CPF");
 
     return patient;
   }
@@ -60,8 +65,17 @@ export class PatientsService {
       },
     });
 
-    if (!patient) throw new NotFoundException('Paciente não encontrado com este CPF');
+    if (!patient)
+      throw new NotFoundException("Paciente não encontrado com este CPF");
 
     return this.patientRepository.remove(patient);
+  }
+
+  async update(id: string, data: Partial<Patient>) {
+    const patient = await this.findOne(id);
+
+    Object.assign(patient, data);
+
+    return this.patientRepository.save(patient);
   }
 }

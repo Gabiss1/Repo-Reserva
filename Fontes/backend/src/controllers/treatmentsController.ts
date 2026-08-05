@@ -12,13 +12,13 @@ export class TreatmentsController {
     return this.treatmentsService.create(createTreatmentDto);
   }
 
-  // Read de Tratamento dentro da agenda por meio de ID
-  @Get('agenda/:id')
-  getAgenda(
+  // Read de Tratamento dentro da agenda por meio de ID as quais foram não atendidas
+  @Get('agenda/missed/:id')
+  async getMissed(
     @Param('id', ParseUUIDPipe) id: string,
     @Query('type') type: 'user' | 'patient' = 'patient'
   ) {
-    return this.treatmentsService.getDailyAgenda(id, type);
+    return this.treatmentsService.getMissedDoses(id, type);
   }
 
   // Read de Tratamento dentro da agenda por meio de ID no dia pesquisado
@@ -30,16 +30,15 @@ export class TreatmentsController {
     return this.treatmentsService.getDailyAgenda(id, type, new Date());
   }
 
-  // Read de Tratamento dentro da agenda por meio de ID as quais foram não atendidas
-  @Get('agenda/missed/:id')
-  async getMissed(
+  // Read de Tratamento dentro da agenda por meio de ID
+  @Get('agenda/:id')
+  getAgenda(
     @Param('id', ParseUUIDPipe) id: string,
     @Query('type') type: 'user' | 'patient' = 'patient'
   ) {
-    return this.treatmentsService.getMissedDoses(id, type);
+    return this.treatmentsService.getDailyAgenda(id, type);
   }
 
-  
   @Patch('check-in/:doseId')
   async checkIn(@Param('doseId', ParseUUIDPipe) doseId: string) {
     return this.treatmentsService.checkInDose(doseId);
