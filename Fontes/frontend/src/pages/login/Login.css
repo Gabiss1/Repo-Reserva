@@ -81,3 +81,49 @@
     background:#1d4ed8;
 
 }
+
+.error-message{
+
+    color:#dc2626;
+
+    text-align:center;
+
+    font-size:14px;
+
+    margin-top:-8px;
+
+}
+
+.secondary-button{
+
+    background:#ffffff !important;
+
+    color:#2563eb !important;
+
+    border:2px solid #2563eb !important;
+
+    transition:.2s;
+
+}
+
+.secondary-button:hover{
+
+    background:#2563eb !important;
+
+    color:#ffffff !important;
+
+}
+
+.login-subtitle{
+
+    text-align:center;
+
+    color:#666;
+
+    margin-top:-18px;
+
+    margin-bottom:25px;
+
+    font-size:14px;
+
+}

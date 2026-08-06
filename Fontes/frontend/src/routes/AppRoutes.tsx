@@ -5,6 +5,9 @@ import PrivateRoute from "./PrivateRoutes";
 import InstitutionDashboard from "../pages/dashboard/InstitutionDashboard";
 import Profile from "../pages/profile/Profile";
 import Login from "../pages/login/Login";
+import RegisterChoice from "../pages/register/RegisterChoice";
+import RegisterInstitution from "../pages/register/RegisterInstitution";
+import RegisterUser from "../pages/register/RegisterUser";
 
 export default function AppRoutes() {
   return (
@@ -38,6 +41,18 @@ export default function AppRoutes() {
             <Profile />
           </PrivateRoute>
         }
+      />
+
+      <Route path="/register" element={<RegisterChoice />} />
+
+      <Route
+        path="/register/user"
+        element={<RegisterUser />}
+      />
+
+      <Route
+        path="/register/institution"
+        element={<RegisterInstitution />}
       />
     </Routes>
   );

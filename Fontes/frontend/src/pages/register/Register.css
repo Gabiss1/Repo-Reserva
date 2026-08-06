@@ -1,0 +1,111 @@
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f4f7fb;
+}
+
+.auth-card {
+    width: 420px;
+    background: white;
+    border-radius: 14px;
+    padding: 32px;
+    box-shadow: 0 12px 30px rgba(0,0,0,.12);
+}
+
+.auth-card h1{
+    text-align:center;
+    color:#2563eb;
+    margin-bottom:24px;
+}
+
+.auth-card form{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+}
+
+.auth-card input{
+    padding:12px;
+    border-radius:8px;
+    border:1px solid #d4d4d4;
+    font-size:15px;
+}
+
+.register-options{
+
+    display:flex;
+
+    gap:16px;
+
+    margin-top:20px;
+
+}
+
+.register-options button{
+
+    flex:1;
+
+    padding:12px;
+
+    border-radius:8px;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+.primary-button{
+
+    background:#2563eb;
+
+    color:white;
+
+    border:none;
+
+}
+
+.primary-button:hover{
+
+    background:#1d4ed8;
+
+}
+
+.secondary-button{
+
+    background:white;
+
+    color:#2563eb;
+
+    border:2px solid #2563eb;
+
+}
+
+.secondary-button:hover{
+
+    background:#eff6ff;
+
+}
+
+.error{
+    color:#dc2626;
+    font-size:14px;
+}
+
+.success{
+    color:#16a34a;
+    font-size:14px;
+}
+
+.link{
+    text-align:center;
+    margin-top:16px;
+    cursor:pointer;
+    color:#2563eb;
+}

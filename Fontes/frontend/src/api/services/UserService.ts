@@ -1,21 +1,61 @@
 import api from "../api";
-import { UpdatePasswordRequest } from "../types/profile/UpdatePasswordRequest";
-import { UpdateProfileRequest } from "../types/profile/UpdateProfileRequest";
 
-export async function getUser(id: string) {
-  const response = await api.get(`/users/${id}`);
+import { CreateUserDTO } from "../types/creates/CreateUserDTO";
+import { User } from "../types/entities/User";
 
-  return response.data;
+export async function createUser(
+    data: CreateUserDTO,
+): Promise<User> {
+
+    const response = await api.post(
+        "/users",
+        data,
+    );
+
+    return response.data;
+
 }
 
-export async function updateUser(id: string, data: UpdateProfileRequest) {
-  const response = await api.patch(`/users/${id}`, data);
-    
-  return response.data;
+export async function getUser(
+    id: string,
+): Promise<User> {
+
+    const response = await api.get(
+        `/users/${id}`,
+    );
+
+    return response.data;
+
 }
 
-export async function updatePassword(id: string, data: UpdatePasswordRequest) {
-  const response = await api.patch(`/users/${id}/password`, data);
+export async function updateUser(
+    id: string,
+    data: Partial<CreateUserDTO>,
+): Promise<User> {
 
-  return response.data;
+    const response = await api.patch(
+        `/users/${id}`,
+        data,
+    );
+
+    return response.data;
+
+}
+
+export async function updatePassword(
+    id: string,
+    oldPassword: string,
+    newPassword: string,
+) {
+
+    const response = await api.patch(
+        `/users/${id}/password`,
+        {
+            oldPassword,
+            newPassword,
+        },
+    );
+
+    return response.data;
+
 }

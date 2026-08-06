@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../contexts/AuthContexts";
 
+import "./Login.css"
+
 export default function Login() {
 
     const navigate = useNavigate();
@@ -48,56 +50,82 @@ export default function Login() {
 
     return (
 
-        <div
-            style={{
-                display: "flex",
-                flexDirection: "column",
-                width: "300px",
-                margin: "100px auto",
-                gap: "12px",
-            }}
-        >
+        <div className="login-page">
 
-            <h2>MedicApp</h2>
+            <div className="login-card">
 
-            <input
-                type="email"
-                placeholder="E-mail"
-                value={email}
-                onChange={(e) =>
-                    setEmail(
-                        e.target.value
-                    )
-                }
-            />
+                <h1 className="login-title">
+                    MedicApp
+                </h1>
 
-            <input
-                type="password"
-                placeholder="Senha"
-                value={password}
-                onChange={(e) =>
-                    setPassword(
-                        e.target.value
-                    )
-                }
-            />
+                <p className="login-subtitle">
+                    Controle inteligente da administração de medicamentos
+                </p>
 
-            {
-                error &&
-                <span
-                    style={{
-                        color: "red",
+                <form
+                    className="login-form"
+                    onSubmit={(e) => {
+
+                        e.preventDefault();
+
+                        handleLogin();
+
                     }}
                 >
-                    {error}
-                </span>
-            }
 
-            <button
-                onClick={handleLogin}
-            >
-                Entrar
-            </button>
+                    <input
+                        type="email"
+                        placeholder="E-mail"
+                        value={email}
+                        onChange={(e) =>
+                            setEmail(
+                                e.target.value
+                            )
+                        }
+                    />
+
+                    <input
+                        type="password"
+                        placeholder="Senha"
+                        value={password}
+                        onChange={(e) =>
+                            setPassword(
+                                e.target.value
+                            )
+                        }
+                    />
+
+                    {
+
+                        error &&
+
+                        <span className="error-message">
+
+                            {error}
+
+                        </span>
+
+                    }
+
+                    <button
+                        type="submit"
+                    >
+                        Entrar
+                    </button>
+
+                    <button
+                        type="button"
+                        className="secondary-button"
+                        onClick={() =>
+                            navigate("/register")
+                        }
+                    >
+                        Criar conta
+                    </button>
+
+                </form>
+
+            </div>
 
         </div>
 
