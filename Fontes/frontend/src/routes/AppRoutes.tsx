@@ -8,6 +8,10 @@ import Login from "../pages/login/Login";
 import RegisterChoice from "../pages/register/RegisterChoice";
 import RegisterInstitution from "../pages/register/RegisterInstitution";
 import RegisterUser from "../pages/register/RegisterUser";
+import CreatePatient from "../pages/patients/CreatePatient";
+import PatientProfile from "../pages/patients/PatientProfile";
+import EditPatient from "../pages/patients/EditPatient";
+import CreateTreatment from "../pages/patients/CreateTreatment";
 
 export default function AppRoutes() {
   return (
@@ -45,15 +49,17 @@ export default function AppRoutes() {
 
       <Route path="/register" element={<RegisterChoice />} />
 
-      <Route
-        path="/register/user"
-        element={<RegisterUser />}
-      />
+      <Route path="/register/user" element={<RegisterUser />} />
 
-      <Route
-        path="/register/institution"
-        element={<RegisterInstitution />}
-      />
+      <Route path="/register/institution" element={<RegisterInstitution />} />
+
+      <Route path="/institution/patients/new" element={<PrivateRoute><CreatePatient /></PrivateRoute>} />
+
+      <Route path="/institution/patients/:id" element={<PrivateRoute><PatientProfile /></PrivateRoute>} />
+
+      <Route path="/institution/patients/:id/edit" element={<PrivateRoute><EditPatient /></PrivateRoute>} />
+
+      <Route path="/institution/patients/:id/treatment" element={<PrivateRoute><CreateTreatment /></PrivateRoute>} />
     </Routes>
   );
 }

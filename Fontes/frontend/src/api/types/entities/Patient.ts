@@ -9,5 +9,4 @@ export interface Patient {
     cpf: string;
 
     institution?: Institution;
-
 }

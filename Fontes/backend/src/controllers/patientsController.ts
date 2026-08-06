@@ -8,6 +8,7 @@ import {
   Body,
   Patch,
 } from "@nestjs/common";
+import { UpdatePatientDto } from "src/dashboard/dto/UpdatePatientDTO";
 import { Patient } from "src/entidades/Patient";
 import { PatientsService } from "src/services/patientsService";
 
@@ -41,11 +42,8 @@ export class PatientsController {
 
   @Patch(":id")
   update(
-    @Param("id", ParseUUIDPipe)
-    id: string,
-
-    @Body()
-    data: Partial<Patient>
+    @Param("id", ParseUUIDPipe) id: string,
+    @Body() data: UpdatePatientDto,
   ) {
     return this.patientsService.update(id, data);
   }

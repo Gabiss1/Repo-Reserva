@@ -4,77 +4,47 @@ import { Patient } from "../../api/types/entities/Patient";
 import "./Patient.css";
 
 export default function Patients() {
+  const [patients, setPatients] = useState<Patient[]>([]);
 
-    const [patients, setPatients] =
-        useState<Patient[]>([]);
+  useEffect(() => {
+    async function load() {
+      const response = await getPatients();
 
-    useEffect(() => {
+      setPatients(response);
+    }
 
-        async function load() {
+    load();
+  }, []);
 
-            const response =
-                await getPatients();
+  return (
+    <div className="page">
+      <h1>Pacientes</h1>
 
-            setPatients(response);
+      <table>
+        <thead>
+          <tr>
+            <th>Nome</th>
 
-        }
+            <th>CPF</th>
 
-        load();
+            <th></th>
+          </tr>
+        </thead>
 
-    }, []);
+        <tbody>
+          {patients.map((patient) => (
+            <tr key={patient.id}>
+              <td>{patient.name}</td>
 
-    return (
+              <td>{patient.cpf}</td>
 
-        <div className="page">
-
-            <h1>Pacientes</h1>
-
-            <table>
-
-                <thead>
-
-                    <tr>
-
-                        <th>Nome</th>
-
-                        <th>CPF</th>
-
-                        <th></th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    {patients.map(patient => (
-
-                        <tr key={patient.id}>
-
-                            <td>{patient.name}</td>
-
-                            <td>{patient.cpf}</td>
-
-                            <td>
-
-                                <button>
-
-                                    Abrir
-
-                                </button>
-
-                            </td>
-
-                        </tr>
-
-                    ))}
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-    );
-
+              <td>
+                <button>Abrir</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 }

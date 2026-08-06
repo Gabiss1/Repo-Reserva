@@ -1,60 +1,45 @@
 import api from "../api";
+import { CreatePatientRequest } from "../types/creates/CreatePatientDTO";
 import { Patient } from "../types/entities/Patient";
-
+import { UpdatePatientRequest } from "../types/updates/UpdatePatientRequest";
 
 export async function getPatients(): Promise<Patient[]> {
+  const response = await api.get("/patients");
 
-    const response = await api.get("/patients");
-
-    return response.data;
+  return response.data;
 }
 
+export async function getPatientById(id: string): Promise<Patient> {
+  const response = await api.get(`/patients/${id}`);
 
-
-export async function getPatientById(
-    id:string
-): Promise<Patient>{
-
-    const response = await api.get(`/patients/${id}`);
-
-    return response.data;
+  return response.data;
 }
-
-
 
 export async function createPatient(
-    patient: Partial<Patient>
-): Promise<Patient>{
+  institutionId: string,
+  patient: CreatePatientRequest
+): Promise<Patient> {
+  const response = await api.post(
+    `/institutions/${institutionId}/patients`,
+    patient
+  );
 
-    const response = await api.post(
-        "/patients",
-        patient
-    );
-
-    return response.data;
+  return response.data;
 }
-
-
 
 export async function updatePatient(
-    id:string,
-    patient:Partial<Patient>
-):Promise<Patient>{
+  id: string,
+  patient: UpdatePatientRequest
+): Promise<Patient> {
+  const response = await api.patch(
+    `/patients/${id}`,
 
-    const response = await api.put(
-        `/patients/${id}`,
-        patient
-    );
+    patient
+  );
 
-    return response.data;
+  return response.data;
 }
 
-
-
-export async function deletePatient(
-    id:number
-){
-
-    await api.delete(`/patients/${id}`);
-
+export async function deletePatient(id: number) {
+  await api.delete(`/patients/${id}`);
 }
