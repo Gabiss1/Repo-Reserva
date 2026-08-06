@@ -53,13 +53,68 @@ export default function AppRoutes() {
 
       <Route path="/register/institution" element={<RegisterInstitution />} />
 
-      <Route path="/institution/patients/new" element={<PrivateRoute><CreatePatient /></PrivateRoute>} />
+      <Route
+        path="/institution/patients/new"
+        element={
+          <PrivateRoute>
+            <CreatePatient />
+          </PrivateRoute>
+        }
+      />
 
-      <Route path="/institution/patients/:id" element={<PrivateRoute><PatientProfile /></PrivateRoute>} />
+      <Route
+        path="/institution/patients/:id"
+        element={
+          <PrivateRoute>
+            <PatientProfile />
+          </PrivateRoute>
+        }
+      />
 
-      <Route path="/institution/patients/:id/edit" element={<PrivateRoute><EditPatient /></PrivateRoute>} />
+      <Route
+        path="/institution/patients/:id/edit"
+        element={
+          <PrivateRoute>
+            <EditPatient />
+          </PrivateRoute>
+        }
+      />
 
-      <Route path="/institution/patients/:id/treatment" element={<PrivateRoute><CreateTreatment /></PrivateRoute>} />
+      <Route
+        path="/institution/patients/:id/treatment"
+        element={
+          <PrivateRoute>
+            <CreateTreatment />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/institution/medications"
+        element={
+          <PrivateRoute>
+            <MedicationList />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/institution/medications/new"
+        element={
+          <PrivateRoute>
+            <CreateMedication />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/institution/medications/:id/edit"
+        element={
+          <PrivateRoute>
+            <EditMedication />
+          </PrivateRoute>
+        }
+      />
     </Routes>
   );
 }
