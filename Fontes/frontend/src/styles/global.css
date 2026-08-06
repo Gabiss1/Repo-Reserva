@@ -1,35 +1,45 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+*{
 
+    margin:0;
 
-body {
-    font-family:
-        "Inter",
-        Arial,
-        sans-serif;
+    padding:0;
 
-    background:
-        var(--background);
+    box-sizing:border-box;
 
-    color:
-        var(--text);
-}
-
-
-button {
-
-    font-family: inherit;
-
-    cursor: pointer;
+    font-family:'Segoe UI',sans-serif;
 
 }
 
+body{
 
-input {
+    background:#f4f7fb;
 
-    font-family: inherit;
+    color:#333;
+
+}
+
+button{
+
+    transition:.2s;
+
+}
+
+button:hover{
+
+    transform:translateY(-2px);
+
+}
+
+input{
+
+    outline:none;
+
+}
+
+a{
+
+    text-decoration:none;
+
+    color:inherit;
 
 }

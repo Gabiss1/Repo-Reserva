@@ -1,0 +1,101 @@
+.patients-page{
+
+    padding:40px;
+
+    background:#f4f7fb;
+
+    min-height:100vh;
+
+}
+
+.patients-title{
+
+    margin-bottom:30px;
+
+    color:#2563eb;
+
+}
+
+.patient-table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    background:white;
+
+    border-radius:12px;
+
+    overflow:hidden;
+
+    box-shadow:0 3px 12px rgba(0,0,0,.08);
+
+}
+
+.patient-table th{
+
+    background:#2563eb;
+
+    color:white;
+
+    padding:15px;
+
+}
+
+.patient-table td{
+
+    padding:14px;
+
+    border-bottom:1px solid #eee;
+
+}
+
+.patient-table tr:hover{
+
+    background:#f4f8ff;
+
+}
+
+.patient-button{
+
+    background:#2563eb;
+
+    color:white;
+
+    border:none;
+
+    padding:8px 16px;
+
+    border-radius:6px;
+
+    cursor:pointer;
+
+}
+
+.patient-button:hover{
+
+    background:#1d4ed8;
+
+}
+
+.patient-card{
+
+    background:white;
+
+    border-radius:12px;
+
+    padding:25px;
+
+    box-shadow:0 3px 10px rgba(0,0,0,.08);
+
+    margin-bottom:25px;
+
+}
+
+.patient-actions{
+
+    display:flex;
+
+    gap:15px;
+
+}

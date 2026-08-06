@@ -2,9 +2,9 @@ import { Routes, Route, Navigate } from "react-router-dom";
 
 import PatientDashboard from "../pages/PatientDashboard";
 import PrivateRoute from "./PrivateRoutes";
-import InstitutionDashboard from "../pages/InstitutionDashboard";
-import Login from "../pages/Login";
+import InstitutionDashboard from "../pages/dashboard/InstitutionDashboard";
 import Profile from "../pages/profile/Profile";
+import Login from "../pages/login/Login";
 
 export default function AppRoutes() {
   return (

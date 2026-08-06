@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Login from "./pages/Login";
 import PatientDashboard from "./pages/PatientDashboard";
-import InstitutionDashboard from "./pages/InstitutionDashboard";
+import InstitutionDashboard from "./pages/dashboard/InstitutionDashboard";
 import { AuthProvider } from "./contexts/AuthContexts";
 
 export default function App() {

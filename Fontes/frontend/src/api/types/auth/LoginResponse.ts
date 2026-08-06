@@ -4,6 +4,6 @@ export interface LoginResponse {
 
     token: string;
 
-    user: AuthUser | null;
+    user: AuthUser;
 
 }

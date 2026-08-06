@@ -1,58 +1,60 @@
-import { useEffect, useState } from "react";
-
-import { useAuth } from "../../hooks/useAuth";
-
-import { getUser, updateUser } from "../../api/services/UserService";
-
+import { useAuth } from "../../contexts/AuthContexts";
 import "./Profile.css";
 
 export default function Profile() {
-  const { user } = useAuth();
 
-  const [name, setName] = useState("");
+    const { user } = useAuth();
 
-  const [email, setEmail] = useState("");
+    if (!user) return null;
 
-  useEffect(() => {
-    async function load() {
-      if (!user) return;
+    return (
 
-      const data = await getUser(user.id);
+        <div className="page">
 
-      setName(data.name);
+            <h1>Meu Perfil</h1>
 
-      setEmail(data.email);
-    }
+            <div className="card">
 
-    load();
-  }, []);
+                <label>Nome</label>
 
-  async function save() {
-    if (!user) return;
+                <input defaultValue={user.name}/>
 
-    await updateUser(user.id, {
-      name,
-      email,
-    });
+                <label>Email</label>
 
-    alert("Perfil atualizado!");
-  }
+                <input defaultValue={user.email}/>
 
-  return (
-    <div className="profile-container">
-      <div className="profile-card">
-        <h1>Meu Perfil</h1>
+                <button>
 
-        <label>Nome</label>
+                    Salvar
 
-        <input value={name} onChange={(e) => setName(e.target.value)} />
+                </button>
 
-        <label>Email</label>
+            </div>
 
-        <input value={email} onChange={(e) => setEmail(e.target.value)} />
+            <div className="card">
 
-        <button onClick={save}>Salvar alterações</button>
-      </div>
-    </div>
-  );
+                <h2>Alterar Senha</h2>
+
+                <input
+                    placeholder="Senha atual"
+                    type="password"
+                />
+
+                <input
+                    placeholder="Nova senha"
+                    type="password"
+                />
+
+                <button>
+
+                    Alterar senha
+
+                </button>
+
+            </div>
+
+        </div>
+
+    );
+
 }

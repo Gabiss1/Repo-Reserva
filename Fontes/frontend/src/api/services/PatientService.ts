@@ -12,7 +12,7 @@ export async function getPatients(): Promise<Patient[]> {
 
 
 export async function getPatientById(
-    id:number
+    id:string
 ): Promise<Patient>{
 
     const response = await api.get(`/patients/${id}`);
@@ -37,7 +37,7 @@ export async function createPatient(
 
 
 export async function updatePatient(
-    id:number,
+    id:string,
     patient:Partial<Patient>
 ):Promise<Patient>{
 
