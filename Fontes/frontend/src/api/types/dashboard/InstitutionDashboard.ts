@@ -1,7 +1,9 @@
 import { PatientSummary } from "./PatientSummary";
 import { TodayAgenda } from "./TodayAgenda";
+import { TreatmentSummary } from "./TreatmentSummary";
 
 export interface InstitutionDashboard {
+
     institution: {
         id: string;
         name: string;
@@ -20,4 +22,6 @@ export interface InstitutionDashboard {
     patients: PatientSummary[];
 
     todayAgenda: TodayAgenda[];
+
+    activeTreatments: TreatmentSummary[];
 }

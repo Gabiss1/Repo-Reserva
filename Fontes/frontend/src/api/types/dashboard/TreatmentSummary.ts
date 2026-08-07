@@ -1,11 +1,15 @@
 export interface TreatmentSummary {
+  id: string;
 
-    id: string;
+  patientName: string;
 
-    medication: string;
+  medicationName: string;
 
-    dosage: string;
+  intervalHours: number;
 
-    frequency: string;
+  durationDays: number;
 
+  startDate: string;
+
+  status: "ACTIVE" | "FINISHED" | "CANCELLED";
 }
