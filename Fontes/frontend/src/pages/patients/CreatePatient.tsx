@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { createPatient } from "../../api/services/PatientService";
-import { useAuth } from "../../contexts/AuthContexts";
 
-import "./createPatient.css";
+import "./Patient.css";
+import { useAuth } from "../../contexts/AuthContexts";
 
 export default function CreatePatient() {
   const navigate = useNavigate();
@@ -15,56 +15,77 @@ export default function CreatePatient() {
 
   const [cpf, setCpf] = useState("");
 
-  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  async function handleSubmit(event: FormEvent) {
+    event.preventDefault();
+
+    if (user?.role !== "institution") {
+      return;
+    }
 
     try {
-      if (!user) return;
+      setLoading(true);
 
-      if (user.role !== "institution") {
-        setError("Apenas instituições podem cadastrar pacientes.");
-
-        return;
-      }
-
-      await createPatient(user.id, {
+      await createPatient(user!.id, {
         name,
         cpf,
       });
 
-      navigate("/institution");
-    } catch {
-      setError("Não foi possível cadastrar o paciente.");
+      navigate("/institution/patients");
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
     <div className="patient-page">
       <div className="patient-card">
-        <h1>Novo Paciente</h1>
+        <div className="patient-header">
+          <div>
+            <h1>Novo Paciente</h1>
+
+            <p>Cadastre um novo paciente</p>
+          </div>
+
+          <button
+            className="secondary-button"
+            onClick={() => navigate("/institution/patients")}
+          >
+            ← Voltar
+          </button>
+        </div>
 
         <form className="patient-form" onSubmit={handleSubmit}>
+          <label>Nome</label>
+
           <input
-            type="text"
-            placeholder="Nome"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(event) => setName(event.target.value)}
+            required
           />
+
+          <label>CPF</label>
 
           <input
-            type="text"
-            placeholder="CPF"
             value={cpf}
-            onChange={(e) => setCpf(e.target.value)}
+            onChange={(event) => setCpf(event.target.value)}
+            required
           />
 
-          {error && <span className="error">{error}</span>}
+          <div className="form-actions">
+            <button
+              type="button"
+              className="secondary-button"
+              onClick={() => navigate("/institution/patients")}
+            >
+              Cancelar
+            </button>
 
-          <button type="submit" className="primary-button">
-            Cadastrar Paciente
-          </button>
+            <button type="submit" className="primary-button" disabled={loading}>
+              {loading ? "Salvando..." : "Salvar Paciente"}
+            </button>
+          </div>
         </form>
       </div>
     </div>

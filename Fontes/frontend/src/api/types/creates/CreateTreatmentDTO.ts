@@ -1,13 +1,12 @@
-export interface CreateTreatmentRequest {
+export class CreateTreatmentDto {
 
-    medicationId: string;
+    medicationId!: string;
 
-    patientCpf: string;
+    intervalHours!: number;
 
-    intervalHours: number;
+    durationDays!: number;
 
-    durationDays: number;
+    startDate!: string;
 
-    startDate: string;
-
+    patientCpf?: string;
 }

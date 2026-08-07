@@ -58,7 +58,7 @@ export class NotificationsService {
           // Monta os dados que serão enviados ao cliente
           const payload = {
             title: 'Hora do Medicamento!',
-            message: `Está na hora de tomar ${dose.treatment.medication.name} (${dose.treatment.medication.strength || ''})`,
+            message: `Está na hora de tomar ${dose.treatment.medication.name} (${dose.treatment.medication.pharmaceuticalForm || ''})`,
             doseId: dose.id,
             medicationName: dose.treatment.medication.name,
           };

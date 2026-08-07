@@ -3,132 +3,73 @@ import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../contexts/AuthContexts";
 
-import "./Login.css"
+import "./Login.css";
 
 export default function Login() {
+  const navigate = useNavigate();
 
-    const navigate = useNavigate();
+  const { login } = useAuth();
 
-    const { login } = useAuth();
+  const [email, setEmail] = useState("");
 
-    const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-    const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-    const [error, setError] = useState("");
+  async function handleLogin() {
+    try {
+      const response = await login(email, password);
 
-    async function handleLogin() {
-
-        try {
-
-            const response = await login(
-                email,
-                password,
-            );
-
-            if (
-                response.user.role === "institution"
-            ) {
-
-                navigate("/institution");
-
-            } else {
-
-                navigate("/dashboard");
-
-            }
-
-        } catch {
-
-            setError(
-                "E-mail ou senha inválidos."
-            );
-
-        }
-
+      navigate("/dashboard");
+    } catch {
+      setError("E-mail ou senha inválidos.");
     }
+  }
 
-    return (
+  return (
+    <div className="login-page">
+      <div className="login-card">
+        <h1 className="login-title">MedicApp</h1>
 
-        <div className="login-page">
+        <p className="login-subtitle">
+          Controle inteligente da administração de medicamentos
+        </p>
 
-            <div className="login-card">
+        <form
+          className="login-form"
+          onSubmit={(e) => {
+            e.preventDefault();
 
-                <h1 className="login-title">
-                    MedicApp
-                </h1>
+            handleLogin();
+          }}
+        >
+          <input
+            type="email"
+            placeholder="E-mail"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
 
-                <p className="login-subtitle">
-                    Controle inteligente da administração de medicamentos
-                </p>
+          <input
+            type="password"
+            placeholder="Senha"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
-                <form
-                    className="login-form"
-                    onSubmit={(e) => {
+          {error && <span className="error-message">{error}</span>}
 
-                        e.preventDefault();
+          <button type="submit">Entrar</button>
 
-                        handleLogin();
-
-                    }}
-                >
-
-                    <input
-                        type="email"
-                        placeholder="E-mail"
-                        value={email}
-                        onChange={(e) =>
-                            setEmail(
-                                e.target.value
-                            )
-                        }
-                    />
-
-                    <input
-                        type="password"
-                        placeholder="Senha"
-                        value={password}
-                        onChange={(e) =>
-                            setPassword(
-                                e.target.value
-                            )
-                        }
-                    />
-
-                    {
-
-                        error &&
-
-                        <span className="error-message">
-
-                            {error}
-
-                        </span>
-
-                    }
-
-                    <button
-                        type="submit"
-                    >
-                        Entrar
-                    </button>
-
-                    <button
-                        type="button"
-                        className="secondary-button"
-                        onClick={() =>
-                            navigate("/register")
-                        }
-                    >
-                        Criar conta
-                    </button>
-
-                </form>
-
-            </div>
-
-        </div>
-
-    );
-
+          <button
+            type="button"
+            className="secondary-button"
+            onClick={() => navigate("/register")}
+          >
+            Criar conta
+          </button>
+        </form>
+      </div>
+    </div>
+  );
 }

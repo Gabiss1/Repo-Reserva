@@ -2,6 +2,7 @@ import api from "../api";
 import { CreateInstitutionDTO } from "../types/creates/CreateInstitutionDTO";
 
 import { Institution } from "../types/entities/Institution";
+import { UpdatePasswordRequest } from "../types/updates/UpdatePasswordRequest";
 
 export async function createInstitution(
     data: CreateInstitutionDTO,
@@ -44,15 +45,13 @@ export async function updateInstitution(
 
 export async function updateInstitutionPassword(
     id: string,
-    oldPassword: string,
-    newPassword: string,
+    data: UpdatePasswordRequest
 ) {
 
     const response = await api.patch(
         `/institutions/${id}/password`,
         {
-            oldPassword,
-            newPassword,
+            data
         },
     );
 

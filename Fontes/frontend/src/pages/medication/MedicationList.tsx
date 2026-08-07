@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "./medication.css";
 import {
   deleteMedication,
-  getMedications,
+  findAllMedications,
 } from "../../api/services/MedicationService";
 import { Medication } from "../../api/types/entities/Medication";
 
@@ -17,7 +17,7 @@ export default function MedicationList() {
 
   async function loadMedications() {
     try {
-      const response = await getMedications();
+      const response = await findAllMedications();
 
       setMedications(response);
     } catch {
@@ -55,12 +55,21 @@ export default function MedicationList() {
         <div className="page-header">
           <h1>Medicamentos</h1>
 
-          <button
-            className="primary-button"
-            onClick={() => navigate("/medications/create")}
-          >
-            Novo Medicamento
-          </button>
+          <div className="page-actions">
+            <button
+              className="secondary-button"
+              onClick={() => navigate("/dashboard")}
+            >
+              ← Voltar ao Dashboard
+            </button>
+
+            <button
+              className="primary-button"
+              onClick={() => navigate("/institution/medications/new")}
+            >
+              Novo Medicamento
+            </button>
+          </div>
         </div>
 
         <table className="table">

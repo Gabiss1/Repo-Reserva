@@ -11,13 +11,17 @@ import RegisterUser from "../pages/register/RegisterUser";
 import CreatePatient from "../pages/patients/CreatePatient";
 import PatientProfile from "../pages/patients/PatientProfile";
 import EditPatient from "../pages/patients/EditPatient";
-import CreateTreatment from "../pages/patients/CreateTreatment";
 import CategoryList from "../pages/category/CategoryList";
 import CreateCategory from "../pages/category/CreateCategory";
 import EditCategory from "../pages/category/EditCategory";
 import CreateMedication from "../pages/medication/CreateMedication";
 import MedicationList from "../pages/medication/MedicationList";
 import EditMedication from "../pages/medication/EditMedication";
+import CreateTreatment from "../pages/treatment/CreateTreatment";
+import Dashboard from "../pages/dashboard/Dashboard";
+import PatientList from "../pages/patients/Patients";
+import TreatmentList from "../pages/treatment/TreatmentList";
+import EditTreatment from "../pages/treatment/EditTreatment";
 
 export default function AppRoutes() {
   return (
@@ -30,7 +34,7 @@ export default function AppRoutes() {
         path="/dashboard"
         element={
           <PrivateRoute>
-            <PatientDashboard />
+            <Dashboard />
           </PrivateRoute>
         }
       />
@@ -60,6 +64,15 @@ export default function AppRoutes() {
       <Route path="/register/institution" element={<RegisterInstitution />} />
 
       <Route
+        path="/institution/patients"
+        element={
+          <PrivateRoute>
+            <PatientList />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
         path="/institution/patients/new"
         element={
           <PrivateRoute>
@@ -82,15 +95,6 @@ export default function AppRoutes() {
         element={
           <PrivateRoute>
             <EditPatient />
-          </PrivateRoute>
-        }
-      />
-
-      <Route
-        path="/institution/patients/:id/treatment"
-        element={
-          <PrivateRoute>
-            <CreateTreatment />
           </PrivateRoute>
         }
       />
@@ -145,6 +149,42 @@ export default function AppRoutes() {
         element={
           <PrivateRoute>
             <EditCategory />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/institution/treatments"
+        element={
+          <PrivateRoute>
+            <TreatmentList />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/institution/patients/:id/treatment"
+        element={
+          <PrivateRoute>
+            <CreateTreatment />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/institution/treatments/new"
+        element={
+          <PrivateRoute>
+            <CreateTreatment />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/institution/treatments/:id/edit"
+        element={
+          <PrivateRoute>
+            <EditTreatment />
           </PrivateRoute>
         }
       />

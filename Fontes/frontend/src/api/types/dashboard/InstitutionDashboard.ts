@@ -1,19 +1,23 @@
-import { InstitutionInfo } from "./InstitutionInfo";
 import { PatientSummary } from "./PatientSummary";
-import { TreatmentSummary } from "./TreatmentSummary";
+import { TodayAgenda } from "./TodayAgenda";
 
 export interface InstitutionDashboard {
+    institution: {
+        id: string;
+        name: string;
+        cnpj: string;
+    };
 
-    institution: InstitutionInfo;
-
-    totalPatients: number;
-
-    activeTreatments: number;
-
-    todayAppointments: number;
+    statistics: {
+        totalPatients: number;
+        activeTreatments: number;
+        todayDoses: number;
+        takenToday: number;
+        missedToday: number;
+        adherencePercentage: number;
+    };
 
     patients: PatientSummary[];
 
-    recentTreatments: TreatmentSummary[];
-
+    todayAgenda: TodayAgenda[];
 }

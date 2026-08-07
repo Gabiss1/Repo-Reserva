@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "./medication.css";
 
 import { createMedication } from "../../api/services/MedicationService";
-import { getCategories } from "../../api/services/CategoryService";
+import { findAllCategories } from "../../api/services/CategoryService";
 
 import { Category } from "../../api/types/entities/Category";
 import { PharmaceuticalForm } from "../../api/types/enums/PharmaceuticalForm";
@@ -31,7 +31,7 @@ export default function CreateMedication() {
 
   async function loadCategories() {
     try {
-      const response = await getCategories();
+      const response = await findAllCategories();
 
       setCategories(response);
 
@@ -54,10 +54,10 @@ export default function CreateMedication() {
 
         pharmaceuticalForm,
 
-        categoryId
+        categoryId,
       });
 
-      navigate("/medications");
+      navigate("/institution/medications");
     } catch {
       setError("Não foi possível cadastrar o medicamento.");
     }
@@ -119,7 +119,7 @@ export default function CreateMedication() {
             <button
               type="button"
               className="secondary-button"
-              onClick={() => navigate("/medications")}
+              onClick={() => navigate("/institution/medications")}
             >
               Cancelar
             </button>

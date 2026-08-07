@@ -1,46 +1,97 @@
-import { Controller, Post, Body, Get, Param, Patch, ParseUUIDPipe, Query } from '@nestjs/common';
-import { TreatmentsService } from 'src/services/treatmentsService';
-import { CreateTreatmentDto } from 'src/dtos/treatmentsDTO';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+  Post,
+  Query,
+} from "@nestjs/common";
+import { CreateTreatmentDTO } from "src/dashboard/dto/create/CreateTreatmentDTO";
+import { UpdateTreatmentDTO } from "src/dashboard/dto/update/UpdateTreatmentDTO";
 
-@Controller('treatments')
+import { TreatmentsService } from "src/services/treatmentsService";
+
+@Controller("treatments")
 export class TreatmentsController {
   constructor(private readonly treatmentsService: TreatmentsService) {}
 
-  // Create de Tratamento
+  // Create
   @Post()
-  create(@Body() createTreatmentDto: CreateTreatmentDto) {
-    return this.treatmentsService.create(createTreatmentDto);
+  create(
+    @Body()
+    dto: CreateTreatmentDTO,
+  ) {
+    return this.treatmentsService.create(dto);
   }
 
-  // Read de Tratamento dentro da agenda por meio de ID as quais foram não atendidas
-  @Get('agenda/missed/:id')
+  // Listar todos os tratamentos
+  @Get()
+  findAll() {
+    return this.treatmentsService.findAll();
+  }
+
+  // Agenda
+  @Get("agenda/missed/:id")
   async getMissed(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Query('type') type: 'user' | 'patient' = 'patient'
+    @Param("id", ParseUUIDPipe)
+    id: string,
+
+    @Query("type")
+    type: "user" | "patient" = "patient",
   ) {
     return this.treatmentsService.getMissedDoses(id, type);
   }
 
-  // Read de Tratamento dentro da agenda por meio de ID no dia pesquisado
-  @Get('agenda/today/:id')
+  @Get("agenda/today/:id")
   async getToday(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Query('type') type: 'user' | 'patient' = 'patient'
+    @Param("id", ParseUUIDPipe)
+    id: string,
+
+    @Query("type")
+    type: "user" | "patient" = "patient",
   ) {
     return this.treatmentsService.getDailyAgenda(id, type, new Date());
   }
 
-  // Read de Tratamento dentro da agenda por meio de ID
-  @Get('agenda/:id')
+  @Get("agenda/:id")
   getAgenda(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Query('type') type: 'user' | 'patient' = 'patient'
+    @Param("id", ParseUUIDPipe)
+    id: string,
+
+    @Query("type")
+    type: "user" | "patient" = "patient",
   ) {
     return this.treatmentsService.getDailyAgenda(id, type);
   }
 
-  @Patch('check-in/:doseId')
-  async checkIn(@Param('doseId', ParseUUIDPipe) doseId: string) {
+  // Buscar tratamento específico
+  @Get(":id")
+  findOne(
+    @Param("id", ParseUUIDPipe)
+    id: string,
+  ) {
+    return this.treatmentsService.findOne(id);
+  }
+
+  // Atualizar tratamento
+  @Patch(":id")
+  update(
+    @Param("id", ParseUUIDPipe)
+    id: string,
+
+    @Body()
+    dto: UpdateTreatmentDTO,
+  ) {
+    return this.treatmentsService.update(id, dto);
+  }
+
+  @Patch("check-in/:doseId")
+  async checkIn(
+    @Param("doseId", ParseUUIDPipe)
+    doseId: string,
+  ) {
     return this.treatmentsService.checkInDose(doseId);
   }
 }

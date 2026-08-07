@@ -3,7 +3,7 @@ import { CreatePatientRequest } from "../types/creates/CreatePatientDTO";
 import { Patient } from "../types/entities/Patient";
 import { UpdatePatientRequest } from "../types/updates/UpdatePatientRequest";
 
-export async function getPatients(): Promise<Patient[]> {
+export async function findAllPatients(): Promise<Patient[]> {
   const response = await api.get("/patients");
 
   return response.data;

@@ -4,11 +4,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import "./medication.css";
 
 import {
-  getMedication,
+  findMedicationById,
   updateMedication,
 } from "../../api/services/MedicationService";
 
-import { getCategories } from "../../api/services/CategoryService";
+import { findAllCategories } from "../../api/services/CategoryService";
 
 import { Category } from "../../api/types/entities/Category";
 import { PharmaceuticalForm } from "../../api/types/enums/PharmaceuticalForm";
@@ -33,9 +33,9 @@ export default function EditMedication() {
     async function load() {
       if (!id) return;
 
-      const medication = await getMedication(id);
+      const medication = await findMedicationById(id);
 
-      const categoryList = await getCategories();
+      const categoryList = await findAllCategories();
 
       setCategories(categoryList);
 

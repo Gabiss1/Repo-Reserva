@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
-  getCategories,
+  findAllCategories,
   deleteCategory,
 } from "../../api/services/CategoryService";
 
@@ -19,7 +19,7 @@ export default function CategoryList() {
 
   async function loadCategories() {
     try {
-      const response = await getCategories();
+      const response = await findAllCategories();
 
       setCategories(response);
     } finally {
@@ -55,12 +55,21 @@ export default function CategoryList() {
         <div className="page-header">
           <h1>Categorias</h1>
 
-          <button
-            className="primary-button"
-            onClick={() => navigate("/institution/categories/new")}
-          >
-            Nova Categoria
-          </button>
+          <div className="page-actions">
+            <button
+              className="primary-button"
+              onClick={() => navigate("/institution/categories/new")}
+            >
+              Nova Categoria
+            </button>
+
+            <button
+              className="secondary-button"
+              onClick={() => navigate("/dashboard")}
+            >
+              ← Voltar ao Dashboard
+            </button>
+          </div>
         </div>
 
         <table className="table">

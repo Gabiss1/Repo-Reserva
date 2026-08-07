@@ -1,4 +1,4 @@
-export interface CreateCategoryRequest {
+export interface CreateCategoryDTO {
 
     name: string;
 

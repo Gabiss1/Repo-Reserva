@@ -437,8 +437,8 @@ export class DashboardService {
             id: treatment.id,
             medicationId: treatment.medication.id,
             medication: treatment.medication.name,
-            dosage: treatment.medication.strength,
-            dosageForm: treatment.medication.dosageForm,
+            dosage: treatment.medication.pharmaceuticalForm,
+            dosageForm: treatment.medication.dosage,
             intervalHours: treatment.intervalHours,
             durationDays: treatment.durationDays,
             startDate: treatment.startDate,
@@ -460,7 +460,7 @@ export class DashboardService {
                 dose.treatment.medication.name,
 
             dosage:
-                dose.treatment.medication.strength,
+                dose.treatment.medication.dosage,
 
             scheduledTime:
                 dose.scheduledTime,

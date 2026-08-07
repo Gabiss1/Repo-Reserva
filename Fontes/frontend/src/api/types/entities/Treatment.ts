@@ -1,21 +1,23 @@
 import { Dose } from "./Dose";
 import { Medication } from "./Medication";
+import { Patient } from "./Patient";
 
+export type TreatmentStatus = "ACTIVE" | "FINISHED" | "CANCELLED";
 
 export interface Treatment {
+  id: string;
 
-    id: string;
+  patient?: Patient;
 
-    medication: Medication;
+  medication: Medication;
 
-    dosage: string;
+  intervalHours: number;
 
-    frequency: string;
+  durationDays: number;
 
-    startDate: string;
+  startDate: string;
 
-    endDate?: string;
+  status: TreatmentStatus;
 
-    doses?: Dose[];
-
+  doses?: Dose[];
 }

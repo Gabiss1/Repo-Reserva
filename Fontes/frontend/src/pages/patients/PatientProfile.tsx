@@ -1,74 +1,113 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+
 import { getPatientById } from "../../api/services/PatientService";
 import { Patient } from "../../api/types/entities/Patient";
+
 import "./Patient.css";
 
 export default function PatientProfile() {
+  const navigate = useNavigate();
 
-    const { id } = useParams();
+  const { id } = useParams();
 
-    const [patient, setPatient] =
-        useState<Patient>();
+  const [patient, setPatient] = useState<Patient | null>(null);
 
-    useEffect(() => {
+  const [loading, setLoading] = useState(true);
 
-        async function load() {
+  useEffect(() => {
+    async function loadPatient() {
+      if (!id) return;
 
-            if (!id) return;
+      try {
+        const response = await getPatientById(id);
 
-            const response =
-                await getPatientById(id);
+        setPatient(response);
+      } finally {
+        setLoading(false);
+      }
+    }
 
-            setPatient(response);
+    loadPatient();
+  }, [id]);
 
-        }
-
-        load();
-
-    }, [id]);
-
-    if (!patient)
-        return <p>Carregando...</p>;
-
+  if (loading) {
     return (
+      <div className="patient-page">
+        <div className="patient-card">Carregando paciente...</div>
+      </div>
+    );
+  }
 
-        <div className="page">
+  if (!patient) {
+    return (
+      <div className="patient-page">
+        <div className="patient-card">
+          <p>Paciente não encontrado.</p>
 
+          <button
+            className="secondary-button"
+            onClick={() => navigate("/institution/patients")}
+          >
+            ← Voltar para Pacientes
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="patient-page">
+      <div className="patient-card">
+        <div className="patient-header">
+          <div>
             <h1>{patient.name}</h1>
 
-            <div className="card">
+            <p>Perfil do paciente</p>
+          </div>
 
-                <p>CPF: {patient.cpf}</p>
+          <div className="page-actions">
+            <button
+              className="secondary-button"
+              onClick={() => navigate("/institution/patients")}
+            >
+              ← Voltar
+            </button>
 
-                <p>Instituição: {patient.institution?.name}</p>
+            <button
+              className="secondary-button"
+              onClick={() =>
+                navigate(`/institution/patients/${patient.id}/edit`)
+              }
+            >
+              Editar
+            </button>
 
-            </div>
-
-            <div className="card">
-
-                <button>
-
-                    Novo Tratamento
-
-                </button>
-
-                <button>
-
-                    Editar Paciente
-
-                </button>
-
-                <button>
-
-                    Excluir Paciente
-
-                </button>
-
-            </div>
-
+            <button
+              className="primary-button"
+              onClick={() =>
+                navigate(`/institution/patients/${patient.id}/treatment`)
+              }
+            >
+              Novo Tratamento
+            </button>
+          </div>
         </div>
 
-    );
+        <div className="patient-info">
+          <div className="patient-info-item">
+            <span>Nome</span>
 
+            <strong>{patient.name}</strong>
+          </div>
+
+          <div className="patient-info-item">
+            <span>CPF</span>
+
+            <strong>{patient.cpf}</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }

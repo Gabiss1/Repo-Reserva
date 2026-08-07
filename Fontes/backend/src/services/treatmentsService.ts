@@ -1,11 +1,16 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Between, LessThan } from 'typeorm';
-import { Treatment } from '../entidades/Treatment';
-import { DoseHistory } from '../entidades/DoseHistory';
-import { User } from '../entidades/User';
-import { Patient } from '../entidades/Patient';
-import { CreateTreatmentDto } from '../dtos/treatmentsDTO';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository, Between, LessThan } from "typeorm";
+import { Treatment } from "../entidades/Treatment";
+import { DoseHistory } from "../entidades/DoseHistory";
+import { User } from "../entidades/User";
+import { Patient } from "../entidades/Patient";
+import { CreateTreatmentDto } from "../dtos/treatmentsDTO";
+import { UpdateTreatmentDTO } from "src/dashboard/dto/update/UpdateTreatmentDTO";
 
 @Injectable()
 export class TreatmentsService {
@@ -33,7 +38,7 @@ export class TreatmentsService {
 
       if (!user)
         throw new NotFoundException(
-          'Usuário autônomo não encontrado com este CPF',
+          "Usuário autônomo não encontrado com este CPF",
         );
 
       owner.user = user;
@@ -44,7 +49,7 @@ export class TreatmentsService {
 
       if (!patient)
         throw new NotFoundException(
-          'Paciente da clínica não encontrado com este CPF',
+          "Paciente da clínica não encontrado com este CPF",
         );
 
       owner.patient = patient;
@@ -85,9 +90,7 @@ export class TreatmentsService {
 
       doses.push(dose);
 
-      nextDoseTime.setHours(
-        nextDoseTime.getHours() + treatment.intervalHours,
-      );
+      nextDoseTime.setHours(nextDoseTime.getHours() + treatment.intervalHours);
     }
 
     await this.doseHistoryRepository.save(doses);
@@ -96,7 +99,7 @@ export class TreatmentsService {
   // Função para buscar a agenda de doses de um dia específico
   async getDailyAgenda(
     id: string,
-    type: 'user' | 'patient',
+    type: "user" | "patient",
     date: Date = new Date(),
   ) {
     const startOfDay = new Date(date);
@@ -107,7 +110,7 @@ export class TreatmentsService {
 
     // Define o filtro conforme o tipo de perfil informado
     const whereCondition =
-      type === 'user'
+      type === "user"
         ? { treatment: { user: { id } } }
         : { treatment: { patient: { id } } };
 
@@ -122,16 +125,16 @@ export class TreatmentsService {
         },
       },
       order: {
-        scheduledTime: 'ASC',
+        scheduledTime: "ASC",
       },
     });
   }
 
   // Função para buscar todas as doses em atraso
-  async getMissedDoses(id: string, type: 'user' | 'patient') {
+  async getMissedDoses(id: string, type: "user" | "patient") {
     // Define o filtro conforme o tipo de perfil informado
     const whereCondition =
-      type === 'user'
+      type === "user"
         ? { treatment: { user: { id } } }
         : { treatment: { patient: { id } } };
 
@@ -147,7 +150,7 @@ export class TreatmentsService {
         },
       },
       order: {
-        scheduledTime: 'DESC',
+        scheduledTime: "DESC",
       },
     });
   }
@@ -162,13 +165,11 @@ export class TreatmentsService {
     });
 
     if (!dose) {
-      throw new NotFoundException('Dose não encontrada');
+      throw new NotFoundException("Dose não encontrada");
     }
 
     if (dose.isTaken) {
-      throw new BadRequestException(
-        'Esta dose já foi marcada como tomada',
-      );
+      throw new BadRequestException("Esta dose já foi marcada como tomada");
     }
 
     dose.isTaken = true;
@@ -180,12 +181,12 @@ export class TreatmentsService {
   // Função para buscar todos os tratamentos de um usuário ou paciente
   async findAllByCpf(
     cpf: string,
-    type: 'user' | 'patient',
-    status?: 'ACTIVE' | 'FINISHED' | 'CANCELLED',
+    type: "user" | "patient",
+    status?: "ACTIVE" | "FINISHED" | "CANCELLED",
   ) {
     // Define o filtro conforme o tipo de perfil informado
     const whereCondition: any =
-      type === 'user'
+      type === "user"
         ? {
             user: { cpf },
           }
@@ -206,43 +207,75 @@ export class TreatmentsService {
       },
       order: {
         history: {
-          scheduledTime: 'ASC',
+          scheduledTime: "ASC",
         },
       },
     });
   }
 
-  async update(
-    id:string,
-    data:Partial<Treatment>
-  ){
-  
-    const treatment =
-      await this.treatmentRepository.findOne({
-        where:{
-          id
-        }
-      });
-  
-  
-    if(!treatment){
-  
-      throw new NotFoundException(
-        "Tratamento não encontrado"
-      );
-  
+  async findAll() {
+    return this.treatmentRepository.find({
+      relations: {
+        user: true,
+        patient: true,
+        medication: true,
+      },
+
+      order: {
+        startDate: "DESC",
+      },
+    });
+  }
+
+  async findOne(id: string) {
+    const treatment = await this.treatmentRepository.findOne({
+      where: {
+        id,
+      },
+
+      relations: {
+        user: true,
+        patient: true,
+        medication: true,
+      },
+    });
+
+    if (!treatment) {
+      throw new NotFoundException("Tratamento não encontrado");
     }
-  
-  
-    Object.assign(
-      treatment,
-      data
-    );
-  
-  
-    return this.treatmentRepository.save(
-      treatment
-    );
-  
+
+    return treatment;
+  }
+
+  async update(id: string, dto: UpdateTreatmentDTO) {
+    const treatment = await this.findOne(id);
+
+    if (dto.medicationId) {
+      treatment.medication = {
+        id: dto.medicationId,
+      } as any;
+    }
+
+    if (dto.intervalHours !== undefined) {
+      treatment.intervalHours = dto.intervalHours;
+    }
+
+    if (dto.durationDays !== undefined) {
+      treatment.durationDays = dto.durationDays;
+    }
+
+    if (dto.startDate) {
+      treatment.startDate = new Date(dto.startDate);
+    }
+
+    if (dto.status) {
+      treatment.status = dto.status;
+    }
+
+    if (dto.notes !== undefined) {
+      treatment.notes = dto.notes;
+    }
+
+    return this.treatmentRepository.save(treatment);
   }
 }

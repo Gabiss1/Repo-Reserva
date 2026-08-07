@@ -1,37 +1,39 @@
 import api from "../api";
+import { CreateCategoryDTO } from "../types/creates/CreateCategoryDTO";
+
 import { Category } from "../types/entities/Category";
-import { CreateCategoryRequest } from "../types/creates/CreateCategoryRequest";
 import { UpdateCategoryRequest } from "../types/updates/UpdateCategoryRequest";
 
-export async function getCategories(): Promise<Category[]> {
+export async function findAllCategories(): Promise<Category[]> {
 
-    const response =
-        await api.get("/categories");
+    const response = await api.get(
+        "/categories"
+    );
+
+    return response.data;
+
+}
+
+export async function findCategoryById(
+    id: string
+): Promise<Category> {
+
+    const response = await api.get(
+        `/categories/${id}`
+    );
 
     return response.data;
 
 }
 
 export async function createCategory(
-    category: CreateCategoryRequest,
+    dto: CreateCategoryDTO
 ): Promise<Category> {
 
-    const response =
-        await api.post(
-            "/categories",
-            category,
-        );
-
-    return response.data;
-
-}
-
-export async function getCategoryById(
-    id: string,
-): Promise<Category> {
-
-    const response =
-        await api.get(`/categories/${id}`);
+    const response = await api.post(
+        "/categories",
+        dto
+    );
 
     return response.data;
 
@@ -39,26 +41,24 @@ export async function getCategoryById(
 
 export async function updateCategory(
     id: string,
-    category: UpdateCategoryRequest,
+    dto: UpdateCategoryRequest
 ): Promise<Category> {
 
-    const response =
-        await api.patch(
-            `/categories/${id}`,
-            category,
-        );
+    const response = await api.patch(
+        `/categories/${id}`,
+        dto
+    );
 
     return response.data;
 
 }
 
-
 export async function deleteCategory(
-    id: string,
+    id: string
 ): Promise<void> {
 
     await api.delete(
-        `/categories/${id}`,
+        `/categories/${id}`
     );
 
 }

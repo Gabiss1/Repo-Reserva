@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import {
-  getCategoryById,
+  findCategoryById,
   updateCategory,
 } from "../../api/services/CategoryService";
 
@@ -30,7 +30,7 @@ export default function EditCategory() {
       }
 
       try {
-        const category = await getCategoryById(id);
+        const category = await findCategoryById(id);
 
         setName(category.name);
 
