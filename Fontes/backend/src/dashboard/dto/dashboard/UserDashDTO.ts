@@ -1,7 +1,7 @@
-import { AdherenceDto } from "./AdherenceDTO";
-import { NextDoseDto } from "./NextDoseDTO";
-import { TodayAgendaDto } from "./TodayAgendaDTO";
-import { TreatmentSummaryDto } from "./TreatmentSummaryDTO";
+import { AdherenceDto } from "../AdherenceDTO";
+import { NextDoseDto } from "../NextDoseDTO";
+import { TodayAgendaDto } from "../TodayAgendaDTO";
+import { TreatmentSummaryDto } from "../summary/TreatmentSummaryDTO";
 
 export class UserDashboardDto {
 

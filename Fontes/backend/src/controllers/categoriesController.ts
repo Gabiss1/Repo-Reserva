@@ -1,14 +1,21 @@
-import { Controller, Get, Post, Body, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, ParseUUIDPipe, Patch } from '@nestjs/common';
+import { CreateCategoryDto } from 'src/dashboard/dto/create/CreateCategoryDTO';
+import { UpdateCategoryDto } from 'src/dashboard/dto/update/UpdateCategoryDTO';
 import { CategoriesService } from 'src/services/categoriesService';
 
 @Controller('categories')
 export class CategoriesController {
-  constructor(private readonly categoriesService: CategoriesService) {}
+  constructor(private readonly categoriesService: CategoriesService) { }
 
   // Create de categorias
   @Post()
-  create(@Body() dto: { name: string; description?: string }) {
-    return this.categoriesService.create(dto.name, dto.description);
+  create(
+    @Body()
+    dto: CreateCategoryDto,
+  ) {
+
+    return this.categoriesService.create(dto);
+
   }
 
   // Read de categorias para listar todas
@@ -27,5 +34,21 @@ export class CategoriesController {
   @Delete(':id')
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.categoriesService.remove(id);
+  }
+
+  @Patch(":id")
+  update(
+    @Param("id", ParseUUIDPipe)
+    id: string,
+
+    @Body()
+    dto: UpdateCategoryDto,
+  ) {
+
+    return this.categoriesService.update(
+      id,
+      dto,
+    );
+
   }
 }

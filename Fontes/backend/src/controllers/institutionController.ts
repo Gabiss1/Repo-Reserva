@@ -12,9 +12,9 @@ import { Patient } from "src/entidades/Patient";
 import { CreateTreatmentDto } from "src/dtos/treatmentsDTO";
 import { Roles } from "src/auth/decorators/Roles";
 import { UserRole } from "src/auth/dto/enums/UserRole";
-import { UpdatePasswordDto } from "src/dashboard/dto/UpdatePasswordDTO";
-import { UpdateInstitutionDto } from "src/dashboard/dto/UpdateInstitutionDTO";
-import { CreateInstitutionDto } from "src/dashboard/dto/CreateInstitutionDTO";
+import { UpdatePasswordDto } from "src/dashboard/dto/update/UpdatePasswordDTO";
+import { UpdateInstitutionDto } from "src/dashboard/dto/update/UpdateInstitutionDTO";
+import { CreateInstitutionDto } from "src/dashboard/dto/create/CreateInstitutionDTO";
 
 @Controller("institutions")
 export class InstitutionsController {

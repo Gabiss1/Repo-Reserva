@@ -4,7 +4,8 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { getPatientById } from "../../api/services/PatientService";
 
-import { createTreatment, getMedications } from "../../api/services/TreatmentService";
+import { createTreatment } from "../../api/services/TreatmentService";
+import { getMedications } from "../../api/services/MedicationService";
 
 import { Patient } from "../../api/types/entities/Patient";
 import { Medication } from "../../api/types/entities/Medication";

@@ -8,7 +8,7 @@ import {
   Body,
   Patch,
 } from "@nestjs/common";
-import { UpdatePatientDto } from "src/dashboard/dto/UpdatePatientDTO";
+import { UpdatePatientDto } from "src/dashboard/dto/update/UpdatePatientDTO";
 import { Patient } from "src/entidades/Patient";
 import { PatientsService } from "src/services/patientsService";
 

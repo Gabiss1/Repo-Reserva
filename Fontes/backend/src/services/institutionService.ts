@@ -10,7 +10,7 @@ import { Institution } from "src/entidades/Institution";
 import { Patient } from "src/entidades/Patient";
 
 import * as bcrypt from "bcrypt";
-import { CreateInstitutionDto } from "src/dashboard/dto/CreateInstitutionDTO";
+import { CreateInstitutionDto } from "src/dashboard/dto/create/CreateInstitutionDTO";
 
 @Injectable()
 export class InstitutionsService {

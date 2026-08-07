@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, CreateDateColumn } from 'typeorm';
 import { Treatment } from './Treatment';
 import { Category } from './Category';
+import { PharmaceuticalForm } from 'src/dashboard/dto/enum/PharmaceuticalForm';
 
 @Entity('medications')
 export class Medication {
@@ -11,10 +12,10 @@ export class Medication {
   name!: string;
 
   @Column({ nullable: true })
-  dosageForm!: string; // Ex: Comprimido, Xarope, Gotas
+  dosage!: string; // Ex: Comprimido, Xarope, Gotas
 
   @Column({ nullable: true })
-  strength!: string; // Ex: 500mg, 10mg/ml
+  pharmaceuticalForm!: PharmaceuticalForm; // Ex: 500mg, 10mg/ml
 
   @ManyToOne(() => Category, (category) => category.medications, { nullable: true })
   category!: Category;

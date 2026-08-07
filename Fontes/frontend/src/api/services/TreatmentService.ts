@@ -17,13 +17,3 @@ export async function createTreatment(
     return response.data;
 
 }
-
-export async function getMedications() {
-
-    const response = await api.get(
-        "/medications",
-    );
-
-    return response.data;
-
-}

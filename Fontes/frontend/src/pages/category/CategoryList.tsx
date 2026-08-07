@@ -1,34 +1,34 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import "./medication.css";
 import {
-  deleteMedication,
-  getMedications,
-} from "../../api/services/MedicationService";
-import { Medication } from "../../api/types/entities/Medication";
+  getCategories,
+  deleteCategory,
+} from "../../api/services/CategoryService";
 
-export default function MedicationList() {
+import { Category } from "../../api/types/entities/Category";
+
+import "./category.css";
+
+export default function CategoryList() {
   const navigate = useNavigate();
 
-  const [medications, setMedications] = useState<Medication[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
 
   const [loading, setLoading] = useState(true);
 
-  async function loadMedications() {
+  async function loadCategories() {
     try {
-      const response = await getMedications();
+      const response = await getCategories();
 
-      setMedications(response);
-    } catch {
-      alert("Não foi possível carregar os medicamentos.");
+      setCategories(response);
     } finally {
       setLoading(false);
     }
   }
 
   useEffect(() => {
-    loadMedications();
+    loadCategories();
   }, []);
 
   async function handleDelete(id: string) {
@@ -40,9 +40,9 @@ export default function MedicationList() {
       return;
     }
 
-    await deleteMedication(id);
+    await deleteCategory(id);
 
-    loadMedications();
+    loadCategories();
   }
 
   if (loading) {
@@ -53,13 +53,13 @@ export default function MedicationList() {
     <div className="category-page">
       <div className="category-card">
         <div className="page-header">
-          <h1>Medicamentos</h1>
+          <h1>Categorias</h1>
 
           <button
             className="primary-button"
-            onClick={() => navigate("/medications/create")}
+            onClick={() => navigate("/institution/categories/new")}
           >
-            Novo Medicamento
+            Nova Categoria
           </button>
         </div>
 
@@ -67,26 +67,25 @@ export default function MedicationList() {
           <thead>
             <tr>
               <th>Nome</th>
-              <th>Categoria</th>
-              <th>Forma Farmacêutica</th>
-              <th>Dosagem</th>
+
+              <th>Descrição</th>
+
               <th>Ações</th>
             </tr>
           </thead>
 
           <tbody>
-            {medications.map((medication) => (
-              <tr key={medication.id}>
-                <td>{medication.name}</td>
-                <td>{medication.category?.name}</td>
-                <td>{medication.pharmaceuticalForm}</td>
-                <td>{medication.dosage}</td>
+            {categories.map((category) => (
+              <tr key={category.id}>
+                <td>{category.name}</td>
+
+                <td>{category.description ?? "-"}</td>
 
                 <td>
                   <button
                     className="secondary-button"
                     onClick={() =>
-                      navigate(`/medications/${medication.id}/edit`)
+                      navigate(`/institution/categories/${category.id}/edit`)
                     }
                   >
                     Editar
@@ -94,7 +93,7 @@ export default function MedicationList() {
 
                   <button
                     className="danger-button"
-                    onClick={() => handleDelete(medication.id)}
+                    onClick={() => handleDelete(category.id)}
                   >
                     Excluir
                   </button>

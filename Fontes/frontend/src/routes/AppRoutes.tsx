@@ -12,6 +12,12 @@ import CreatePatient from "../pages/patients/CreatePatient";
 import PatientProfile from "../pages/patients/PatientProfile";
 import EditPatient from "../pages/patients/EditPatient";
 import CreateTreatment from "../pages/patients/CreateTreatment";
+import CategoryList from "../pages/category/CategoryList";
+import CreateCategory from "../pages/category/CreateCategory";
+import EditCategory from "../pages/category/EditCategory";
+import CreateMedication from "../pages/medication/CreateMedication";
+import MedicationList from "../pages/medication/MedicationList";
+import EditMedication from "../pages/medication/EditMedication";
 
 export default function AppRoutes() {
   return (
@@ -112,6 +118,33 @@ export default function AppRoutes() {
         element={
           <PrivateRoute>
             <EditMedication />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/institution/categories"
+        element={
+          <PrivateRoute>
+            <CategoryList />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/institution/categories/new"
+        element={
+          <PrivateRoute>
+            <CreateCategory />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/institution/categories/:id/edit"
+        element={
+          <PrivateRoute>
+            <EditCategory />
           </PrivateRoute>
         }
       />

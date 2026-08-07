@@ -12,6 +12,8 @@ import {
 
 import { MedicationsService } from "src/services/medicationService";
 import { Medication } from "src/entidades/Medication";
+import { CreateMedicationDTO } from "src/dashboard/dto/create/CreateMedicationDTO";
+import { UpdateMedicationDTO } from "src/dashboard/dto/update/UpdateMedicationDTO";
 
 @Controller("medications")
 export class MedicationsController {
@@ -19,11 +21,8 @@ export class MedicationsController {
 
   // Create de Medicação
   @Post()
-  create(
-    @Body()
-    data: Partial<Medication>
-  ) {
-    return this.medicationsService.create(data);
+  create(@Body() dto: CreateMedicationDTO) {
+    return this.medicationsService.create(dto);
   }
 
   // Read de todas as medicações
@@ -36,7 +35,7 @@ export class MedicationsController {
   @Get("search")
   search(
     @Query("q")
-    q: string
+    q: string,
   ) {
     return this.medicationsService.search(q);
   }
@@ -45,7 +44,7 @@ export class MedicationsController {
   @Get(":id")
   findOne(
     @Param("id", ParseUUIDPipe)
-    id: string
+    id: string,
   ) {
     return this.medicationsService.findOne(id);
   }
@@ -53,20 +52,17 @@ export class MedicationsController {
   // Atualização
   @Patch(":id")
   update(
-    @Param("id", ParseUUIDPipe)
-    id: string,
-
-    @Body()
-    data: Partial<Medication>
+    @Param("id", ParseUUIDPipe) id: string,
+    @Body() dto: UpdateMedicationDTO,
   ) {
-    return this.medicationsService.update(id, data);
+    return this.medicationsService.update(id, dto);
   }
 
   // Delete
   @Delete(":id")
   remove(
     @Param("id", ParseUUIDPipe)
-    id: string
+    id: string,
   ) {
     return this.medicationsService.remove(id);
   }

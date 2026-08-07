@@ -11,18 +11,18 @@ import { Patient } from '../entidades/Patient';
 import { Treatment } from '../entidades/Treatment';
 import { DoseHistory } from '../entidades/DoseHistory';
 
-import { InstitutionDashboardDto } from './dto/InstitutionDashDTO';
-import { PatientDashboardDto } from './dto/PatientDashDTO';
-import { UserDashboardDto } from './dto/UserDashDTO';
+import { InstitutionDashboardDto } from './dto/dashboard/InstitutionDashDTO';
+import { PatientDashboardDto } from './dto/dashboard/PatientDashDTO';
+import { UserDashboardDto } from './dto/dashboard/UserDashDTO';
 
 import { PatientsService } from 'src/services/patientsService';
 import { ReportsService } from 'src/services/reportsService';
 import { TreatmentsService } from 'src/services/treatmentsService';
-import { TreatmentSummaryDto } from './dto/TreatmentSummaryDTO';
+import { TreatmentSummaryDto } from './dto/summary/TreatmentSummaryDTO';
 import { TodayAgendaDto } from './dto/TodayAgendaDTO';
-import { InstitutionStatisticsDto } from './dto/InstitutionStatisticsDTO';
+import { InstitutionStatisticsDto } from './dto/summary/InstitutionStatisticsDTO';
 import { InstitutionsService } from 'src/services/institutionService';
-import { PatientSummaryDto } from './dto/PatientSummaryDTO';
+import { PatientSummaryDto } from './dto/summary/PatientSummaryDTO';
 import { UsersService } from 'src/services/usersService';
 
 @Injectable()

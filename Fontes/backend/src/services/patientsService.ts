@@ -6,7 +6,7 @@ import {
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Patient } from "src/entidades/Patient";
-import { UpdatePatientDto } from "src/dashboard/dto/UpdatePatientDTO";
+import { UpdatePatientDto } from "src/dashboard/dto/update/UpdatePatientDTO";
 
 @Injectable()
 export class PatientsService {
