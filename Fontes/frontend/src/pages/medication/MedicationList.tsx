@@ -95,7 +95,7 @@ export default function MedicationList() {
                   <button
                     className="secondary-button"
                     onClick={() =>
-                      navigate(`/medications/${medication.id}/edit`)
+                      navigate(`/institution/medications/${medication.id}/edit`)
                     }
                   >
                     Editar

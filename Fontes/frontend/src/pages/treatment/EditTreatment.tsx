@@ -32,7 +32,7 @@ export default function EditTreatment() {
   const [startDate, setStartDate] = useState("");
 
   const [status, setStatus] = useState<"ACTIVE" | "FINISHED" | "CANCELLED">(
-    "ACTIVE",
+    "ACTIVE"
   );
 
   const [loading, setLoading] = useState(true);
@@ -142,7 +142,7 @@ export default function EditTreatment() {
 
   return (
     <div className="treatment-page">
-      <div className="treatment-container">
+      <div className="treatment-card">
         <div className="treatment-header">
           <div>
             <h1>Editar Tratamento</h1>
@@ -170,7 +170,11 @@ export default function EditTreatment() {
           </label>
 
           <label>
-            Intervalo em horas
+            Intervalo entre doses
+            <span className="field-description">
+              Informe de quantas em quantas horas o medicamento deve ser
+              administrado.
+            </span>
             <input
               type="number"
               min="1"
@@ -181,7 +185,10 @@ export default function EditTreatment() {
           </label>
 
           <label>
-            Duração em dias
+            Duração do tratamento
+            <span className="field-description">
+              Informe por quantos dias o tratamento deve permanecer ativo.
+            </span>
             <input
               type="number"
               min="1"
@@ -207,7 +214,7 @@ export default function EditTreatment() {
               value={status}
               onChange={(event) =>
                 setStatus(
-                  event.target.value as "ACTIVE" | "FINISHED" | "CANCELLED",
+                  event.target.value as "ACTIVE" | "FINISHED" | "CANCELLED"
                 )
               }
             >

@@ -107,7 +107,7 @@ export default function CreateTreatment() {
           </select>
 
           <label>
-            Intervalo entre doses: <br />
+            Intervalo entre doses (Horas): <br />
             <input
               type="number"
               value={intervalHours}
@@ -118,7 +118,7 @@ export default function CreateTreatment() {
           </label>
 
           <label>
-            Duração do tratamento: <br />
+            Duração do tratamento (Dias): <br />
             <input
               type="number"
               value={durationDays}

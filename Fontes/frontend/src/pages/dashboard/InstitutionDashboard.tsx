@@ -43,7 +43,7 @@ export default function InstitutionDashboardPage() {
 
                     <h2>Pacientes</h2>
 
-                    <h1>{dashboard.totalPatients}</h1>
+                    <h1>{dashboard.statistics.totalPatients}</h1>
 
                 </div>
 
@@ -51,15 +51,15 @@ export default function InstitutionDashboardPage() {
 
                     <h2>Tratamentos</h2>
 
-                    <h1>{dashboard.activeTreatments}</h1>
+                    <h1>{dashboard.statistics.activeTreatments}</h1>
 
                 </div>
 
                 <div className="card">
 
-                    <h2>Consultas Hoje</h2>
+                    <h2>Doses Hoje</h2>
 
-                    <h1>{dashboard.todayAppointments}</h1>
+                    <h1>{dashboard.statistics.todayDoses}</h1>
 
                 </div>
 

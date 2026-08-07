@@ -66,7 +66,7 @@ export default function EditMedication() {
       categoryId,
     });
 
-    navigate("/medications");
+    navigate(`/institution/medications`);
   }
 
   return (
